@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import supabase from '../supabaseClient';
+import { supabase } from '../supabaseClient';
 import Report from './Report';
 
 interface Issue {
   id: string;
   title: string;
   description: string;
-  location: any;
+  location: { lat: number; lng: number };
   timestamp: string;
   votes: number;
 }
@@ -15,19 +15,22 @@ const LiveIssues = () => {
   const [issues, setIssues] = useState<Issue[]>([]);
 
   useEffect(() => {
-    // Initial fetch
     const fetchIssues = async () => {
       const { data, error } = await supabase
         .from('issues')
         .select('*')
         .order('timestamp', { ascending: false });
 
-      if (!error && data) setIssues(data);
+      if (error) {
+        console.error('Fetch error:', error);
+      } else {
+        console.log('Fetched issues:', data);
+        setIssues(data || []);
+      }
     };
 
     fetchIssues();
 
-    // Realtime subscription
     const subscription = supabase
       .channel('public:issues')
       .on(
@@ -45,11 +48,15 @@ const LiveIssues = () => {
   }, []);
 
   return (
-    <div className="bg-white p-4 rounded shadow-md">
+    <div className="bg-gray-200 p-4 rounded shadow-md mb-6">
       <h2 className="text-xl font-semibold mb-2">Live Issues</h2>
-      {issues.map(issue => (
-        <Report key={issue.id} title={issue.title} description={issue.description} />
-      ))}
+      {issues.length === 0 ? (
+        <p className="text-sm text-gray-600">No issues reported yet.</p>
+      ) : (
+        issues.map(issue => (
+          <Report key={issue.id} title={issue.title} description={issue.description} />
+        ))
+      )}
     </div>
   );
 };
