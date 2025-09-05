@@ -1,35 +1,40 @@
 import './App.css';
+import Button from './components/Button';
+import Report from './components/Report';
 
 function App() {
+  const handleSubmit = () => {
+    alert('Query submitted!');
+  };
+
   return (
     <div className="min-h-screen bg-blue-50 text-gray-800 font-sans">
       <header className="bg-blue-900 text-white p-6 text-center text-2xl font-bold">
-        See the world. Change the world.
+        Civic Awareness Platform
       </header>
 
       <main className="p-6">
         <div className="text-center mb-6">
-          <button className="bg-blue-700 text-white px-4 py-2 rounded mr-2">Submit Query</button>
-          <button className="bg-blue-700 text-white px-4 py-2 rounded mr-2">Report an Issue</button>
-          <button className="bg-blue-700 text-white px-4 py-2 rounded">View Petitions</button>
+          <Button text="Submit Query" onClick={handleSubmit} />
+          <Button text="Report an Issue" onClick={() => alert('Issue reported!')} />
+          <Button text="View Petitions" onClick={() => alert('Viewing petitions...')} />
         </div>
+
+        <form className="bg-white p-4 rounded shadow-md mb-6">
+          <label className="block mb-2 font-semibold">Your Query</label>
+          <input
+            type="text"
+            placeholder="Type your concern..."
+            className="w-full p-2 border rounded mb-4"
+          />
+          <Button text="Submit" onClick={handleSubmit} />
+        </form>
 
         <div className="bg-white p-4 rounded shadow-md">
           <h2 className="text-xl font-semibold mb-2">Trending Issues</h2>
-          <ul>
-            <li className="border-b py-2">
-              <strong>Incident Reported:</strong> Disease found in city...
-            </li>
-            <li className="border-b py-2">
-              <strong>News Headline:</strong> Environmental alert...
-            </li>
-            <li className="border-b py-2">
-              <strong>Breaking Event:</strong> Flooding in region...
-            </li>
-            <li className="py-2">
-              <strong>Social Issue:</strong> Resident protests...
-            </li>
-          </ul>
+          <Report title="Flood Alert" description="Heavy rains in region..." />
+          <Report title="Disease Outbreak" description="Cases rising in urban zones..." />
+          <Report title="Protest Movement" description="Citizens demand clean water..." />
         </div>
       </main>
     </div>
