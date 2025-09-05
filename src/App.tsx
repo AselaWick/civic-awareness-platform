@@ -3,6 +3,7 @@ import Button from './components/Button';
 import Report from './components/Report';
 import IssueForm from './components/IssueForm';
 import { useState } from 'react';
+import LiveIssues from './components/LiveIssues';
 
 function App() {
   const [showIssueForm, setShowIssueForm] = useState(false);
@@ -39,6 +40,7 @@ function App() {
         </form>
 
         {showIssueForm && <IssueForm />}
+        <LiveIssues /> {/* Real-time feed replaces static reports */}
 
         <div className="bg-white p-4 rounded shadow-md">
           <h2 className="text-xl font-semibold mb-2">Trending Issues</h2>
