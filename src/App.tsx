@@ -1,8 +1,8 @@
 import './App.css';
+import { useState } from 'react';
 import Button from './components/Button';
 import Report from './components/Report';
 import IssueForm from './components/IssueForm';
-import { useState } from 'react';
 import LiveIssues from './components/LiveIssues';
 
 function App() {
@@ -12,12 +12,12 @@ function App() {
     alert('Query submitted!');
   };
 
-  const handleSubmitQuery = () => {
+  const toggleIssueForm = () => {
     setShowIssueForm(prev => !prev);
   };
 
   return (
-    <div className="min-h-screen bg-blue-50 text-gray-800 font-sans">
+    <div className="min-h-screen bg-blue-500 text-black font-sans">
       <header className="bg-blue-900 text-white p-6 text-center text-2xl font-bold">
         Civic Awareness Platform
       </header>
@@ -25,11 +25,11 @@ function App() {
       <main className="p-6">
         <div className="text-center mb-6">
           <Button text="Submit Query" onClick={handleSubmit} />
-          <Button text="Report an Issue" onClick={() => alert('Issue reported!')} />
+          <Button text={showIssueForm ? 'Hide Issue Form' : 'Report an Issue'} onClick={toggleIssueForm} />
           <Button text="View Petitions" onClick={() => alert('Viewing petitions...')} />
         </div>
 
-        <form className="bg-white p-4 rounded shadow-md mb-6">
+        <form className="bg-gray-200 p-4 rounded shadow-md mb-6">
           <label className="block mb-2 font-semibold">Your Query</label>
           <input
             type="text"
@@ -40,9 +40,9 @@ function App() {
         </form>
 
         {showIssueForm && <IssueForm />}
-        <LiveIssues /> {/* Real-time feed replaces static reports */}
+        <LiveIssues />
 
-        <div className="bg-white p-4 rounded shadow-md">
+        <div className="bg-gray-200 p-4 rounded shadow-md">
           <h2 className="text-xl font-semibold mb-2">Trending Issues</h2>
           <Report title="Flood Alert" description="Heavy rains in region..." />
           <Report title="Disease Outbreak" description="Cases rising in urban zones..." />
