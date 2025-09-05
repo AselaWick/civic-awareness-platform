@@ -75,7 +75,8 @@ const IssueForm = () => {
         required
       />
 
-      <Button text="Submit Issue" onClick={() => {}} />
+      <button type="submit" className="...">Submit Issue</button>
+
     </form>
   );
 };
