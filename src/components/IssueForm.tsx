@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import  supabase  from '../supabaseClient';
+import supabase from '../supabaseClient';
 import Button from './Button';
 
 const IssueForm = () => {
@@ -7,11 +7,13 @@ const IssueForm = () => {
   const [description, setDescription] = useState('');
   const [lat, setLat] = useState('');
   const [lng, setLng] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
-    const { error } = await supabase.from('issues').insert([
+    const { data, error } = await supabase.from('issues').insert([
       {
         title,
         description,
@@ -23,10 +25,13 @@ const IssueForm = () => {
       }
     ]);
 
+    setLoading(false);
+
     if (error) {
-      alert('Error: ' + error.message);
+      console.error('Insert error:', error);
+      alert('❌ Submission failed: ' + error.message);
     } else {
-      alert('Issue submitted successfully!');
+      alert('✅ Issue submitted successfully!');
       setTitle('');
       setDescription('');
       setLat('');
@@ -35,7 +40,7 @@ const IssueForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow-md mb-6">
+    <form onSubmit={handleSubmit} className="bg-gray-200 p-4 rounded shadow-md mb-6">
       <label className="block mb-2 font-semibold">Title</label>
       <input
         type="text"
@@ -57,7 +62,7 @@ const IssueForm = () => {
 
       <label className="block mb-2 font-semibold">Latitude</label>
       <input
-        type="text"
+        type="number"
         value={lat}
         onChange={e => setLat(e.target.value)}
         placeholder="e.g. 23.6102"
@@ -67,7 +72,7 @@ const IssueForm = () => {
 
       <label className="block mb-2 font-semibold">Longitude</label>
       <input
-        type="text"
+        type="number"
         value={lng}
         onChange={e => setLng(e.target.value)}
         placeholder="e.g. 58.5453"
@@ -75,8 +80,7 @@ const IssueForm = () => {
         required
       />
 
-      <button type="submit" className="...">Submit Issue</button>
-
+      <Button text={loading ? 'Submitting...' : 'Submit Issue'} type="submit" onClick={() => {}} />
     </form>
   );
 };
