@@ -3,7 +3,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "jsx": "react-jsx",
-    "moduleResolution": "Node",
+    "moduleResolution": "Node16",
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
