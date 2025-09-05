@@ -1,10 +1,18 @@
 import './App.css';
 import Button from './components/Button';
 import Report from './components/Report';
+import IssueForm from './components/IssueForm';
+import { useState } from 'react';
 
 function App() {
+  const [showIssueForm, setShowIssueForm] = useState(false);
+
   const handleSubmit = () => {
     alert('Query submitted!');
+  };
+
+  const handleSubmitQuery = () => {
+    setShowIssueForm(prev => !prev);
   };
 
   return (
@@ -29,6 +37,8 @@ function App() {
           />
           <Button text="Submit" onClick={handleSubmit} />
         </form>
+
+        {showIssueForm && <IssueForm />}
 
         <div className="bg-white p-4 rounded shadow-md">
           <h2 className="text-xl font-semibold mb-2">Trending Issues</h2>
