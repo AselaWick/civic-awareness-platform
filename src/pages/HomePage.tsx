@@ -7,7 +7,7 @@ const HomePage = () => {
   const [activeTab, setActiveTab] = useState<'live' | 'trending'>('live');
 
   return (
-    <div className="w-full h-screen flex flex-col">
+    <div className="w-full h-screen flex flex-col bg-sky-100">
       <div className="flex-grow">
         <MapView />
       </div>
