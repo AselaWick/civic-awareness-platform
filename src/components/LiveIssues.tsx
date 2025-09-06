@@ -75,7 +75,9 @@ const LiveIssues = () => {
               <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Description</th>
               <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Latitude</th>
               <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Longitude</th>
-              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Votes</th>
+              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Upvotes</th>
+              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Downvotes</th>
+              <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -85,6 +87,8 @@ const LiveIssues = () => {
                 <td className="px-4 py-2 text-sm text-gray-800">{issue.description}</td>
                 <td className="px-4 py-2 text-sm text-gray-800">{issue.location?.lat}</td>
                 <td className="px-4 py-2 text-sm text-gray-800">{issue.location?.lng}</td>
+                <td className="px-4 py-2 text-sm text-gray-800">{issue.upvotes}</td>
+                <td className="px-4 py-2 text-sm text-gray-800">{issue.downvotes}</td>
                 <td className="px-4 py-2 text-sm text-gray-800">
                   <VoteButtons
                     issueId={issue.id}
