@@ -33,18 +33,32 @@ const LiveIssues = () => {
     };
 
     fetchIssues();
+
+    const subscription = supabase
+      .channel('public:issues')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'issues'
+        },
+        payload => {
+          const updatedIssue = payload.new as Issue;
+          console.log('🔄 Realtime update received:', updatedIssue);
+          setIssues(prev =>
+            prev.map(issue =>
+              issue.id === updatedIssue.id ? updatedIssue : issue
+            )
+          );
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(subscription);
+    };
   }, []);
-
-  const refreshVotes = async () => {
-    const { data, error } = await supabase
-      .from('issues')
-      .select('*')
-      .order('timestamp', { ascending: false });
-
-    if (!error) {
-      setIssues(data || []);
-    }
-  };
 
   return (
     <div className="bg-gray-200 p-4 rounded shadow-md mb-6 overflow-x-auto">
@@ -76,7 +90,6 @@ const LiveIssues = () => {
                     issueId={issue.id}
                     currentUpvotes={issue.upvotes}
                     currentDownvotes={issue.downvotes}
-                    onVoteUpdate={refreshVotes}
                   />
                 </td>
               </tr>
