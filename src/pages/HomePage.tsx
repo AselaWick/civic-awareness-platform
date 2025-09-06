@@ -8,8 +8,8 @@ const HomePage = () => {
 
   return (
     <div
-      style={{ backgroundColor: '#e0f2fe', minHeight: '100vh' }}
-      className="w-full flex flex-col"
+      style={{ backgroundColor: '#1e3a8a', minHeight: '100vh' }}
+      className="w-full flex flex-col text-white"
     >
       {/* Map Section */}
       <div className="flex-grow">
@@ -17,14 +17,14 @@ const HomePage = () => {
       </div>
 
       {/* Tab Navigation and Content */}
-      <div className="p-4 border-t border-blue-200">
+      <div className="p-4 border-t border-blue-900 bg-blue-950">
         <div className="flex gap-4 mb-4">
           <button
             onClick={() => setActiveTab('live')}
             className={`px-4 py-2 rounded transition ${
               activeTab === 'live'
-                ? 'bg-blue-300 text-blue-900 font-semibold'
-                : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                ? 'bg-blue-700 text-white font-semibold'
+                : 'bg-blue-900 text-blue-100 hover:bg-blue-800'
             }`}
           >
             Live Issues
@@ -33,15 +33,15 @@ const HomePage = () => {
             onClick={() => setActiveTab('trending')}
             className={`px-4 py-2 rounded transition ${
               activeTab === 'trending'
-                ? 'bg-blue-300 text-blue-900 font-semibold'
-                : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                ? 'bg-blue-700 text-white font-semibold'
+                : 'bg-blue-900 text-blue-100 hover:bg-blue-800'
             }`}
           >
             Trending Issues
           </button>
         </div>
 
-        <div className="p-2 rounded">
+        <div className="p-2 rounded bg-blue-900">
           {activeTab === 'live' && <LiveIssues />}
           {activeTab === 'trending' && <TrendingIssues />}
         </div>
