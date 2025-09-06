@@ -46,13 +46,13 @@ const VoteButtons = ({
     <div className="flex items-center gap-4">
       <div className="flex items-center gap-1">
         <button onClick={handleUpvote}>
-          <img src="/icons/like.svg" alt="Upvote" className="w-4 h-4" />
+          <img src="/icons/like.svg" alt="Upvote" className="w-3 h-3" />
         </button>
         <span className="text-sm font-medium">{currentUpvotes}</span>
       </div>
       <div className="flex items-center gap-1">
         <button onClick={handleDownvote}>
-          <img src="/icons/dislike.svg" alt="Downvote" className="w-4 h-4" />
+          <img src="/icons/dislike.svg" alt="Downvote" className="w-3 h-3" />
         </button>
         <span className="text-sm font-medium">{currentDownvotes}</span>
       </div>
