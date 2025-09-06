@@ -10,7 +10,6 @@ import L, { LatLngExpression } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { supabase } from '../supabaseClient';
 
-// Custom marker icon setup
 import markerIcon from '/icons/marker-icon.png';
 import markerIcon2x from '/icons/marker-icon-2x.png';
 import markerShadow from '/icons/marker-shadow.png';
@@ -48,20 +47,20 @@ const MapView = ({ issues = [] }: MapViewProps) => {
   const [description, setDescription] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
+  const fetchMapIssues = async () => {
+    const { data, error } = await supabase
+      .from('map_issues')
+      .select('*')
+      .gt('upvotes', 5);
+
+    if (error) {
+      console.error('❌ Error fetching map_issues:', error.message);
+    } else {
+      setMapIssues(data || []);
+    }
+  };
+
   useEffect(() => {
-    const fetchMapIssues = async () => {
-      const { data, error } = await supabase
-        .from('map_issues')
-        .select('*')
-        .gt('upvotes', 5);
-
-      if (error) {
-        console.error('❌ Error fetching map_issues:', error.message);
-      } else {
-        setMapIssues(data || []);
-      }
-    };
-
     fetchMapIssues();
   }, []);
 
@@ -80,22 +79,24 @@ const MapView = ({ issues = [] }: MapViewProps) => {
 
     setSubmitting(true);
 
-    const { error } = await supabase
+    const newIssue = {
+      title,
+      description,
+      location: clickedLocation,
+      timestamp: new Date().toISOString(),
+      upvotes: 0,
+      downvotes: 0
+    };
+
+    const { data, error } = await supabase
       .from('map_issues')
-      .insert([
-        {
-          title,
-          description,
-          location: clickedLocation,
-          timestamp: new Date().toISOString(),
-          upvotes: 0,
-          downvotes: 0
-        }
-      ]);
+      .insert([newIssue])
+      .select(); // fetch inserted row
 
     if (error) {
       console.error('❌ Error submitting issue:', error.message);
     } else {
+      setMapIssues(prev => [...prev, ...(data || [])]);
       setTitle('');
       setDescription('');
       setClickedLocation(null);
@@ -129,17 +130,8 @@ const MapView = ({ issues = [] }: MapViewProps) => {
 
         <MapClickHandler />
 
-        {issues.map(issue => (
-          <Marker key={`main-${issue.id}`} position={[issue.location.lat, issue.location.lng]}>
-            <Popup>
-              <strong>{issue.title}</strong><br />
-              {issue.description}
-            </Popup>
-          </Marker>
-        ))}
-
-        {mapIssues.map(issue => (
-          <Marker key={`map-${issue.id}`} position={[issue.location.lat, issue.location.lng]}>
+        {[...issues, ...mapIssues].map(issue => (
+          <Marker key={issue.id} position={[issue.location.lat, issue.location.lng]}>
             <Popup>
               <strong>{issue.title}</strong><br />
               {issue.description}
