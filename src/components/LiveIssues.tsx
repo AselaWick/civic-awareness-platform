@@ -27,7 +27,6 @@ const LiveIssues = () => {
       if (error) {
         console.error('❌ Fetch error:', error.message);
       } else {
-        console.log('✅ Fetched issues:', data);
         setIssues(data || []);
       }
       setLoading(false);
@@ -46,7 +45,6 @@ const LiveIssues = () => {
         },
         payload => {
           const updatedIssue = payload.new as Issue;
-          console.log('🔄 Realtime update received:', updatedIssue);
           setIssues(prev =>
             prev.map(issue =>
               issue.id === updatedIssue.id ? updatedIssue : issue
@@ -61,7 +59,10 @@ const LiveIssues = () => {
     };
   }, []);
 
-  const mapEligibleIssues = issues.filter(issue => issue.upvotes >= 5);
+  // Only show issues with strong feedback on the map
+  const mapEligibleIssues = issues.filter(
+    issue => issue.upvotes >= 5 || issue.downvotes >= 5
+  );
 
   return (
     <div className="bg-gray-100 p-4 rounded shadow-md mb-6">
@@ -87,23 +88,26 @@ const LiveIssues = () => {
                 </tr>
               </thead>
               <tbody>
-                {issues.map(issue => (
-                  <tr key={issue.id} className="border-t border-gray-200">
-                    <td className="px-4 py-2 text-sm text-gray-800">{issue.title}</td>
-                    <td className="px-4 py-2 text-sm text-gray-800">{issue.description}</td>
-                    <td className="px-4 py-2 text-sm text-gray-800">{issue.location?.lat}</td>
-                    <td className="px-4 py-2 text-sm text-gray-800">{issue.location?.lng}</td>
-                    <td className="px-4 py-2 text-sm text-gray-800">{issue.upvotes}</td>
-                    <td className="px-4 py-2 text-sm text-gray-800">{issue.downvotes}</td>
-                    <td className="px-4 py-2 text-sm text-gray-800">
-                      <VoteButtons
-                        issueId={issue.id}
-                        currentUpvotes={issue.upvotes}
-                        currentDownvotes={issue.downvotes}
-                      />
-                    </td>
-                  </tr>
-                ))}
+                {issues.map(issue => {
+                  const isMapVisible = issue.upvotes >= 5 || issue.downvotes >= 5;
+                  return (
+                    <tr key={issue.id} className={`border-t border-gray-200 ${isMapVisible ? 'bg-blue-50' : ''}`}>
+                      <td className="px-4 py-2 text-sm text-gray-800">{issue.title}</td>
+                      <td className="px-4 py-2 text-sm text-gray-800">{issue.description}</td>
+                      <td className="px-4 py-2 text-sm text-gray-800">{issue.location?.lat}</td>
+                      <td className="px-4 py-2 text-sm text-gray-800">{issue.location?.lng}</td>
+                      <td className="px-4 py-2 text-sm text-gray-800">{issue.upvotes}</td>
+                      <td className="px-4 py-2 text-sm text-gray-800">{issue.downvotes}</td>
+                      <td className="px-4 py-2 text-sm text-gray-800">
+                        <VoteButtons
+                          issueId={issue.id}
+                          currentUpvotes={issue.upvotes}
+                          currentDownvotes={issue.downvotes}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
