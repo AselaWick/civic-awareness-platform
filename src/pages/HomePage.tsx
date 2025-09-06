@@ -8,16 +8,16 @@ const HomePage = () => {
 
   return (
     <div
-      style={{ backgroundColor: '#1e3a8a', minHeight: '100vh' }} // Tailwind's blue-900
+      style={{ backgroundColor: '#1e3a8a', minHeight: '100vh' }}
       className="w-full flex flex-col text-white"
     >
       {/* Map Section */}
-      <div className="flex-grow">
+      <div className="h-[60vh] border-b border-blue-800 shadow-md">
         <MapView />
       </div>
 
       {/* Tab Navigation and Content */}
-      <div className="p-4 border-t border-blue-800 bg-blue-950">
+      <div className="p-4 bg-blue-950 border-t border-blue-800">
         <div className="flex gap-4 mb-4">
           <button
             onClick={() => setActiveTab('live')}

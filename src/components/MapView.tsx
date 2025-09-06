@@ -38,18 +38,17 @@ interface Issue {
 }
 
 interface MapViewProps {
-  issues?: Issue[]; // Optional prop
+  issues?: Issue[];
 }
 
 const MapView = ({ issues = [] }: MapViewProps) => {
-  const center: LatLngExpression = [23.6, 58.5]; // Default center (Oman)
+  const center: LatLngExpression = [23.6, 58.5];
   const [mapIssues, setMapIssues] = useState<Issue[]>([]);
   const [clickedLocation, setClickedLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // Fetch popular map-submitted issues
   useEffect(() => {
     const fetchMapIssues = async () => {
       const { data, error } = await supabase
@@ -67,7 +66,6 @@ const MapView = ({ issues = [] }: MapViewProps) => {
     fetchMapIssues();
   }, []);
 
-  // Handle map click
   const MapClickHandler = () => {
     useMapEvents({
       click(e) {
@@ -77,7 +75,6 @@ const MapView = ({ issues = [] }: MapViewProps) => {
     return null;
   };
 
-  // Submit new issue to map_issues
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!clickedLocation || !title) return;
@@ -109,7 +106,7 @@ const MapView = ({ issues = [] }: MapViewProps) => {
   };
 
   return (
-    <div className="relative w-full h-[600px] rounded shadow-md overflow-hidden">
+    <div className="relative w-full h-[600px] rounded shadow-lg overflow-hidden border border-blue-800 bg-blue-900">
       <MapContainer
         center={center}
         zoom={6}
@@ -123,7 +120,6 @@ const MapView = ({ issues = [] }: MapViewProps) => {
 
         <MapClickHandler />
 
-        {/* Main issues passed from parent */}
         {issues.map(issue => (
           <Marker key={`main-${issue.id}`} position={[issue.location.lat, issue.location.lng]}>
             <Popup>
@@ -133,7 +129,6 @@ const MapView = ({ issues = [] }: MapViewProps) => {
           </Marker>
         ))}
 
-        {/* Popular map-submitted issues */}
         {mapIssues.map(issue => (
           <Marker key={`map-${issue.id}`} position={[issue.location.lat, issue.location.lng]}>
             <Popup>
@@ -143,30 +138,29 @@ const MapView = ({ issues = [] }: MapViewProps) => {
           </Marker>
         ))}
 
-        {/* New issue form */}
         {clickedLocation && (
           <Marker position={[clickedLocation.lat, clickedLocation.lng]}>
             <Popup>
-              <form onSubmit={handleSubmit} className="space-y-2 w-[200px]">
+              <form onSubmit={handleSubmit} className="space-y-2 w-[200px] text-white">
                 <input
                   type="text"
                   placeholder="Title"
                   value={title}
                   onChange={e => setTitle(e.target.value)}
-                  className="w-full px-2 py-1 border rounded text-sm"
+                  className="w-full px-2 py-1 border border-blue-700 bg-blue-950 text-white rounded text-sm"
                   required
                 />
                 <textarea
                   placeholder="Description"
                   value={description}
                   onChange={e => setDescription(e.target.value)}
-                  className="w-full px-2 py-1 border rounded text-sm"
+                  className="w-full px-2 py-1 border border-blue-700 bg-blue-950 text-white rounded text-sm"
                   rows={3}
                 />
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
+                  className="bg-blue-700 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
                 >
                   {submitting ? 'Submitting...' : 'Submit'}
                 </button>
