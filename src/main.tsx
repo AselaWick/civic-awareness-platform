@@ -1,19 +1,9 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App'
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import MapTestRouter from './test/MapTestRouter'; // ✅ not App
+import HomePage from './pages/HomePage';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <MapTestRouter />
+    <HomePage />
   </React.StrictMode>
 );
-
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)

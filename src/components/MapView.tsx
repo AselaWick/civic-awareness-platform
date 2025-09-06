@@ -38,10 +38,10 @@ interface Issue {
 }
 
 interface MapViewProps {
-  issues: Issue[]; // Passed from LiveIssues.tsx
+  issues?: Issue[]; // Optional prop
 }
 
-const MapView = ({ issues }: MapViewProps) => {
+const MapView = ({ issues = [] }: MapViewProps) => {
   const center: LatLngExpression = [23.6, 58.5]; // Default center (Oman)
   const [mapIssues, setMapIssues] = useState<Issue[]>([]);
   const [clickedLocation, setClickedLocation] = useState<{ lat: number; lng: number } | null>(null);
@@ -123,7 +123,7 @@ const MapView = ({ issues }: MapViewProps) => {
 
         <MapClickHandler />
 
-        {/* Main issues passed from LiveIssues.tsx */}
+        {/* Main issues passed from parent */}
         {issues.map(issue => (
           <Marker key={`main-${issue.id}`} position={[issue.location.lat, issue.location.lng]}>
             <Popup>

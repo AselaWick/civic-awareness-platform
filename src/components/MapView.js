@@ -18,7 +18,7 @@ const DefaultIcon = L.icon({
     shadowSize: [41, 41],
 });
 L.Marker.prototype.options.icon = DefaultIcon;
-const MapView = ({ issues }) => {
+const MapView = ({ issues = [] }) => {
     const center = [23.6, 58.5]; // Default center (Oman)
     const [mapIssues, setMapIssues] = useState([]);
     const [clickedLocation, setClickedLocation] = useState(null);
