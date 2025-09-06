@@ -28,7 +28,7 @@ const IssueForm = () => {
     setLoading(false);
 
     if (error) {
-      console.error('Insert error:', error);
+      console.error('❌ Submission error:', error.message);
       alert('❌ Submission failed: ' + error.message);
     } else {
       alert('✅ Issue submitted successfully!');
@@ -41,46 +41,62 @@ const IssueForm = () => {
 
   return (
     <form onSubmit={handleSubmit} className="bg-gray-200 p-4 rounded shadow-md mb-6">
-      <label className="block mb-2 font-semibold">Title</label>
+      <label htmlFor="issue-title" className="block mb-2 font-semibold">Title</label>
       <input
+        id="issue-title"
+        name="title"
         type="text"
         value={title}
         onChange={e => setTitle(e.target.value)}
         placeholder="Issue title"
         className="w-full p-2 border rounded mb-4"
         required
+        autoComplete="title"
       />
 
-      <label className="block mb-2 font-semibold">Description</label>
+      <label htmlFor="issue-description" className="block mb-2 font-semibold">Description</label>
       <textarea
+        id="issue-description"
+        name="description"
         value={description}
         onChange={e => setDescription(e.target.value)}
         placeholder="Describe the issue..."
         className="w-full p-2 border rounded mb-4"
         required
+        autoComplete="description"
       />
 
-      <label className="block mb-2 font-semibold">Latitude</label>
+      <label htmlFor="issue-lat" className="block mb-2 font-semibold">Latitude</label>
       <input
+        id="issue-lat"
+        name="lat"
         type="number"
         value={lat}
         onChange={e => setLat(e.target.value)}
         placeholder="e.g. 23.6102"
         className="w-full p-2 border rounded mb-4"
         required
+        autoComplete="off"
       />
 
-      <label className="block mb-2 font-semibold">Longitude</label>
+      <label htmlFor="issue-lng" className="block mb-2 font-semibold">Longitude</label>
       <input
+        id="issue-lng"
+        name="lng"
         type="number"
         value={lng}
         onChange={e => setLng(e.target.value)}
         placeholder="e.g. 58.5453"
         className="w-full p-2 border rounded mb-4"
         required
+        autoComplete="off"
       />
 
-      <Button text={loading ? 'Submitting...' : 'Submit Issue'} type="submit" onClick={() => {}} />
+      <Button
+        text={loading ? 'Submitting...' : 'Submit Issue'}
+        type="submit"
+        onClick={() => {}}
+      />
     </form>
   );
 };
