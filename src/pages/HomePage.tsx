@@ -7,11 +7,13 @@ const HomePage = () => {
   const [activeTab, setActiveTab] = useState<'live' | 'trending'>('live');
 
   return (
-    <div className="w-full h-screen flex flex-col bg-sky-100">
+    <div className="w-full min-h-screen flex flex-col bg-sky-100">
+      {/* Map Section */}
       <div className="flex-grow">
         <MapView />
       </div>
 
+      {/* Tab Navigation and Content */}
       <div className="bg-sky-50 shadow-inner p-4 border-t border-sky-200">
         <div className="flex gap-4 mb-4">
           <button
