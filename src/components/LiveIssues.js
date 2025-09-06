@@ -2,7 +2,7 @@ import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
 import VoteButtons from './VoteButtons';
-import MapView from './MapView'; // Make sure this component exists
+import MapView from './MapView';
 const LiveIssues = () => {
     const [issues, setIssues] = useState([]);
     const [loading, setLoading] = useState(true);

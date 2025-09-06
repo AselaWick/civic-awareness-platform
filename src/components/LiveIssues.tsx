@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
 import VoteButtons from './VoteButtons';
-import MapView from './MapView'; // Make sure this component exists
+import MapView from './MapView';
 
 interface Issue {
   id: string;

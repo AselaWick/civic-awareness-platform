@@ -5,6 +5,10 @@ import Report from './components/Report';
 import IssueForm from './components/IssueForm';
 import LiveIssues from './components/LiveIssues';
 import 'leaflet/dist/leaflet.css';
+import MapView from './components/MapView';
+
+
+
 
 
 function App() {
