@@ -1,15 +1,28 @@
 /* src/index.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 body {
   margin: 0;
-  font-family: sans-serif;
-  background-color: transparent;
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: #e0f2fe; /* Tailwind's sky-100 */
+  color: #0c4a6e; /* Tailwind's sky-900 */
 }
 
 button {
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  font-weight: 500;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  background-color: #bae6fd; /* sky-200 */
+  color: #0c4a6e;
 }
 
 button:hover {
-  background-color: #1e3a8a;
+  background-color: #7dd3fc; /* sky-300 */
+  color: #083344; /* darker sky tone */
 }
