@@ -26,7 +26,6 @@ const DefaultIcon = L.icon({
 });
 L.Marker.prototype.options.icon = DefaultIcon;
 
-// Types
 interface Issue {
   id: string;
   title: string;
@@ -106,12 +105,22 @@ const MapView = ({ issues = [] }: MapViewProps) => {
   };
 
   return (
-    <div className="relative w-full h-[600px] rounded shadow-lg overflow-hidden border border-blue-800 bg-blue-900">
+    <div
+      style={{
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#1e3a8a',
+        border: '1px solid #1e40af',
+        borderRadius: '8px',
+        overflow: 'hidden',
+      }}
+    >
       <MapContainer
         center={center}
         zoom={6}
         scrollWheelZoom={true}
-        className="absolute inset-0 z-0"
+        style={{ width: '100%', height: '100%', zIndex: 0 }}
       >
         <TileLayer
           attribution='&copy; OpenStreetMap contributors'
@@ -141,26 +150,48 @@ const MapView = ({ issues = [] }: MapViewProps) => {
         {clickedLocation && (
           <Marker position={[clickedLocation.lat, clickedLocation.lng]}>
             <Popup>
-              <form onSubmit={handleSubmit} className="space-y-2 w-[200px] text-white">
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '200px', color: 'white' }}>
                 <input
                   type="text"
                   placeholder="Title"
                   value={title}
                   onChange={e => setTitle(e.target.value)}
-                  className="w-full px-2 py-1 border border-blue-700 bg-blue-950 text-white rounded text-sm"
+                  style={{
+                    padding: '0.25rem 0.5rem',
+                    border: '1px solid #1e40af',
+                    backgroundColor: '#0f172a',
+                    color: 'white',
+                    borderRadius: '4px',
+                    fontSize: '0.875rem',
+                  }}
                   required
                 />
                 <textarea
                   placeholder="Description"
                   value={description}
                   onChange={e => setDescription(e.target.value)}
-                  className="w-full px-2 py-1 border border-blue-700 bg-blue-950 text-white rounded text-sm"
                   rows={3}
+                  style={{
+                    padding: '0.25rem 0.5rem',
+                    border: '1px solid #1e40af',
+                    backgroundColor: '#0f172a',
+                    color: 'white',
+                    borderRadius: '4px',
+                    fontSize: '0.875rem',
+                  }}
                 />
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="bg-blue-700 text-white px-3 py-1 rounded text-sm hover:bg-blue-600"
+                  style={{
+                    backgroundColor: '#1d4ed8',
+                    color: 'white',
+                    padding: '0.5rem',
+                    borderRadius: '4px',
+                    fontSize: '0.875rem',
+                    border: 'none',
+                    cursor: 'pointer',
+                  }}
                 >
                   {submitting ? 'Submitting...' : 'Submit'}
                 </button>

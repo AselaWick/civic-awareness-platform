@@ -5,10 +5,31 @@ import LiveIssues from '../components/LiveIssues';
 import TrendingIssues from '../components/TrendingIssues';
 const HomePage = () => {
     const [activeTab, setActiveTab] = useState('live');
-    return (_jsxs("div", { className: "w-full min-h-screen flex flex-col bg-sky-100", children: [_jsx("div", { className: "flex-grow", children: _jsx(MapView, {}) }), _jsxs("div", { className: "bg-sky-50 shadow-inner p-4 border-t border-sky-200", children: [_jsxs("div", { className: "flex gap-4 mb-4", children: [_jsx("button", { onClick: () => setActiveTab('live'), className: `px-4 py-2 rounded transition ${activeTab === 'live'
-                                    ? 'bg-sky-300 text-sky-900 font-semibold'
-                                    : 'bg-sky-100 text-sky-700 hover:bg-sky-200'}`, children: "Live Issues" }), _jsx("button", { onClick: () => setActiveTab('trending'), className: `px-4 py-2 rounded transition ${activeTab === 'trending'
-                                    ? 'bg-sky-300 text-sky-900 font-semibold'
-                                    : 'bg-sky-100 text-sky-700 hover:bg-sky-200'}`, children: "Trending Issues" })] }), _jsxs("div", { className: "bg-sky-50 p-2 rounded shadow-sm", children: [activeTab === 'live' && _jsx(LiveIssues, {}), activeTab === 'trending' && _jsx(TrendingIssues, {})] })] })] }));
+    return (_jsxs("div", { style: {
+            backgroundColor: '#1e3a8a',
+            minHeight: '100vh',
+            display: 'flex',
+            flexDirection: 'column',
+            color: 'white',
+            width: '100%',
+        }, children: [_jsx("div", { style: { height: '600px', width: '100%', borderBottom: '1px solid #1e3a8a' }, children: _jsx(MapView, {}) }), _jsxs("div", { style: { padding: '1rem', backgroundColor: '#0f172a', borderTop: '1px solid #1e3a8a' }, children: [_jsxs("div", { style: { display: 'flex', gap: '1rem', marginBottom: '1rem' }, children: [_jsx("button", { onClick: () => setActiveTab('live'), style: {
+                                    padding: '0.5rem 1rem',
+                                    borderRadius: '0.375rem',
+                                    backgroundColor: activeTab === 'live' ? '#1d4ed8' : '#1e40af',
+                                    color: activeTab === 'live' ? 'white' : '#cbd5e1',
+                                    fontWeight: activeTab === 'live' ? '600' : '500',
+                                    transition: 'background-color 0.2s ease',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                }, children: "Live Issues" }), _jsx("button", { onClick: () => setActiveTab('trending'), style: {
+                                    padding: '0.5rem 1rem',
+                                    borderRadius: '0.375rem',
+                                    backgroundColor: activeTab === 'trending' ? '#1d4ed8' : '#1e40af',
+                                    color: activeTab === 'trending' ? 'white' : '#cbd5e1',
+                                    fontWeight: activeTab === 'trending' ? '600' : '500',
+                                    transition: 'background-color 0.2s ease',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                }, children: "Trending Issues" })] }), _jsxs("div", { style: { padding: '0.5rem', borderRadius: '0.375rem', backgroundColor: '#1e3a8a' }, children: [activeTab === 'live' && _jsx(LiveIssues, {}), activeTab === 'trending' && _jsx(TrendingIssues, {})] })] })] }));
 };
 export default HomePage;
