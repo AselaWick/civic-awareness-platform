@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../supabaseClient';
+import VoteButtons from './VoteButtons';
 
 interface Issue {
   id: string;
@@ -33,6 +34,18 @@ const LiveIssues = () => {
     fetchIssues();
   }, []);
 
+  // Optional: Refresh votes after update
+  const refreshVotes = async () => {
+    const { data, error } = await supabase
+      .from('issues')
+      .select('*')
+      .order('timestamp', { ascending: false });
+
+    if (!error) {
+      setIssues(data || []);
+    }
+  };
+
   return (
     <div className="bg-gray-200 p-4 rounded shadow-md mb-6 overflow-x-auto">
       <h2 className="text-xl font-semibold mb-4">Live Issues</h2>
@@ -58,7 +71,13 @@ const LiveIssues = () => {
                 <td className="px-4 py-2 text-sm text-gray-800">{issue.description}</td>
                 <td className="px-4 py-2 text-sm text-gray-800">{issue.location?.lat}</td>
                 <td className="px-4 py-2 text-sm text-gray-800">{issue.location?.lng}</td>
-                <td className="px-4 py-2 text-sm text-gray-800">{issue.votes}</td>
+                <td className="px-4 py-2 text-sm text-gray-800">
+                  <VoteButtons
+                    issueId={issue.id}
+                    currentVotes={issue.votes}
+                    onVoteUpdate={refreshVotes}
+                  />
+                </td>
               </tr>
             ))}
           </tbody>
