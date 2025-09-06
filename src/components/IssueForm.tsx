@@ -13,7 +13,7 @@ const IssueForm = () => {
     e.preventDefault();
     setLoading(true);
 
-    const { data, error } = await supabase.from('issues').insert([
+    const { error } = await supabase.from('issues').insert([
       {
         title,
         description,
@@ -21,7 +21,8 @@ const IssueForm = () => {
           lat: parseFloat(lat),
           lng: parseFloat(lng)
         },
-        votes: 0
+        upvotes: 0,
+        downvotes: 0
       }
     ]);
 
