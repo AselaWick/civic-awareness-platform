@@ -4,12 +4,12 @@ import 'leaflet/dist/leaflet.css';
 
 const MapTestPage = () => {
   return (
-    <div className="w-full h-screen">
+    <div style={{ height: '100vh', width: '100%' }}>
       <MapContainer
         center={[23.6, 58.5]} // Oman
         zoom={6}
         scrollWheelZoom={true}
-        className="h-full w-full"
+        style={{ height: '100%', width: '100%' }}
       >
         <TileLayer
           attribution='&copy; OpenStreetMap contributors'
