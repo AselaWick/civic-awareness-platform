@@ -4,6 +4,8 @@ import Button from './components/Button';
 import Report from './components/Report';
 import IssueForm from './components/IssueForm';
 import LiveIssues from './components/LiveIssues';
+import 'leaflet/dist/leaflet.css';
+
 
 function App() {
   const [showIssueForm, setShowIssueForm] = useState(false);
