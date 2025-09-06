@@ -12,24 +12,34 @@ const HomePage = () => {
         <MapView />
       </div>
 
-      <div className="bg-white shadow-md p-4">
+      <div className="bg-sky-50 shadow-inner p-4 border-t border-sky-200">
         <div className="flex gap-4 mb-4">
           <button
             onClick={() => setActiveTab('live')}
-            className={`px-4 py-2 rounded ${activeTab === 'live' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            className={`px-4 py-2 rounded transition ${
+              activeTab === 'live'
+                ? 'bg-sky-300 text-sky-900 font-semibold'
+                : 'bg-sky-100 text-sky-700 hover:bg-sky-200'
+            }`}
           >
             Live Issues
           </button>
           <button
             onClick={() => setActiveTab('trending')}
-            className={`px-4 py-2 rounded ${activeTab === 'trending' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            className={`px-4 py-2 rounded transition ${
+              activeTab === 'trending'
+                ? 'bg-sky-300 text-sky-900 font-semibold'
+                : 'bg-sky-100 text-sky-700 hover:bg-sky-200'
+            }`}
           >
             Trending Issues
           </button>
         </div>
 
-        {activeTab === 'live' && <LiveIssues />}
-        {activeTab === 'trending' && <TrendingIssues />}
+        <div className="bg-sky-50 p-2 rounded shadow-sm">
+          {activeTab === 'live' && <LiveIssues />}
+          {activeTab === 'trending' && <TrendingIssues />}
+        </div>
       </div>
     </div>
   );
