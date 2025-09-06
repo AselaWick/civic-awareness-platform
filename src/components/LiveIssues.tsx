@@ -20,7 +20,7 @@ const LiveIssues = () => {
   useEffect(() => {
     const fetchIssues = async () => {
       const { data, error } = await supabase
-        .from('issues')
+        .from('map_issues')
         .select('*')
         .order('timestamp', { ascending: false });
 
@@ -36,13 +36,13 @@ const LiveIssues = () => {
     fetchIssues();
 
     const subscription = supabase
-      .channel('public:issues')
+      .channel('public:map_issues')
       .on(
         'postgres_changes',
         {
           event: 'UPDATE',
           schema: 'public',
-          table: 'issues'
+          table: 'map_issues'
         },
         payload => {
           const updatedIssue = payload.new as Issue;
@@ -61,7 +61,6 @@ const LiveIssues = () => {
     };
   }, []);
 
-  // Filter issues for map display
   const mapEligibleIssues = issues.filter(issue => issue.upvotes >= 5);
 
   return (
