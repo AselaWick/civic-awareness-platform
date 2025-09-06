@@ -13,6 +13,7 @@ interface Issue {
 
 const LiveIssues = () => {
   const [issues, setIssues] = useState<Issue[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchIssues = async () => {
@@ -22,11 +23,12 @@ const LiveIssues = () => {
         .order('timestamp', { ascending: false });
 
       if (error) {
-        console.error('Fetch error:', error);
+        console.error('❌ Fetch error:', error.message);
       } else {
-        console.log('Fetched issues:', data);
+        console.log('✅ Fetched issues:', data);
         setIssues(data || []);
       }
+      setLoading(false);
     };
 
     fetchIssues();
@@ -37,7 +39,10 @@ const LiveIssues = () => {
         'postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'issues' },
         payload => {
-          setIssues(prev => [payload.new as Issue, ...prev]);
+          console.log('📡 New issue received:', payload.new);
+          if (payload.new) {
+            setIssues(prev => [payload.new as Issue, ...prev]);
+          }
         }
       )
       .subscribe();
@@ -50,7 +55,9 @@ const LiveIssues = () => {
   return (
     <div className="bg-gray-200 p-4 rounded shadow-md mb-6">
       <h2 className="text-xl font-semibold mb-2">Live Issues</h2>
-      {issues.length === 0 ? (
+      {loading ? (
+        <p className="text-sm text-gray-600">Loading issues...</p>
+      ) : issues.length === 0 ? (
         <p className="text-sm text-gray-600">No issues reported yet.</p>
       ) : (
         issues.map(issue => (
