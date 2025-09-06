@@ -61,6 +61,9 @@ const LiveIssues = () => {
     };
   }, []);
 
+  // Filter issues for map display
+  const mapEligibleIssues = issues.filter(issue => issue.upvotes >= 5);
+
   return (
     <div className="bg-gray-100 p-4 rounded shadow-md mb-6">
       <h2 className="text-xl font-semibold mb-4">Live Issues</h2>
@@ -108,7 +111,7 @@ const LiveIssues = () => {
 
           {/* Map Section */}
           <div className="lg:w-1/2">
-            <MapView issues={issues} />
+            <MapView issues={mapEligibleIssues} />
           </div>
         </div>
       )}
