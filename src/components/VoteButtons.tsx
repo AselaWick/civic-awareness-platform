@@ -1,37 +1,61 @@
-// VoteButtons.tsx
 import React from 'react';
 import { supabase } from '../supabaseClient';
 
 interface VoteButtonsProps {
   issueId: string;
-  currentVotes: number;
+  currentUpvotes: number;
+  currentDownvotes: number;
   onVoteUpdate?: () => void;
 }
 
-const VoteButtons = ({ issueId, currentVotes, onVoteUpdate }: VoteButtonsProps) => {
-  const handleVote = async (delta: number) => {
+const VoteButtons = ({
+  issueId,
+  currentUpvotes,
+  currentDownvotes,
+  onVoteUpdate
+}: VoteButtonsProps) => {
+  const handleUpvote = async () => {
     const { error } = await supabase
       .from('issues')
-      .update({ votes: currentVotes + delta })
+      .update({ upvotes: currentUpvotes + 1 })
       .eq('id', issueId);
 
     if (error) {
-      console.error('❌ Vote error:', error.message);
+      console.error('❌ Upvote error:', error.message);
     } else {
-      console.log(`✅ Vote ${delta > 0 ? 'upvoted' : 'downvoted'} for issue ${issueId}`);
+      console.log(`👍 Upvoted issue ${issueId}`);
+      if (onVoteUpdate) onVoteUpdate();
+    }
+  };
+
+  const handleDownvote = async () => {
+    const { error } = await supabase
+      .from('issues')
+      .update({ downvotes: currentDownvotes + 1 })
+      .eq('id', issueId);
+
+    if (error) {
+      console.error('❌ Downvote error:', error.message);
+    } else {
+      console.log(`👎 Downvoted issue ${issueId}`);
       if (onVoteUpdate) onVoteUpdate();
     }
   };
 
   return (
-    <div className="flex items-center gap-2">
-      <button onClick={() => handleVote(1)}>
-        <img src="/icons/like.svg" alt="Upvote" className="w-5 h-5" />
-      </button>
-      <span className="text-sm font-medium">{currentVotes}</span>
-      <button onClick={() => handleVote(-1)}>
-        <img src="/icons/dislike.svg" alt="Downvote" className="w-5 h-5" />
-      </button>
+    <div className="flex items-center gap-4">
+      <div className="flex items-center gap-1">
+        <button onClick={handleUpvote}>
+          <img src="/icons/like.svg" alt="Upvote" className="w-5 h-5" />
+        </button>
+        <span className="text-sm font-medium">{currentUpvotes}</span>
+      </div>
+      <div className="flex items-center gap-1">
+        <button onClick={handleDownvote}>
+          <img src="/icons/dislike.svg" alt="Downvote" className="w-5 h-5" />
+        </button>
+        <span className="text-sm font-medium">{currentDownvotes}</span>
+      </div>
     </div>
   );
 };

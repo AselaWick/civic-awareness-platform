@@ -8,7 +8,8 @@ interface Issue {
   description: string;
   location: { lat: number; lng: number };
   timestamp: string;
-  votes: number;
+  upvotes: number;
+  downvotes: number;
 }
 
 const LiveIssues = () => {
@@ -34,7 +35,6 @@ const LiveIssues = () => {
     fetchIssues();
   }, []);
 
-  // Optional: Refresh votes after update
   const refreshVotes = async () => {
     const { data, error } = await supabase
       .from('issues')
@@ -74,7 +74,8 @@ const LiveIssues = () => {
                 <td className="px-4 py-2 text-sm text-gray-800">
                   <VoteButtons
                     issueId={issue.id}
-                    currentVotes={issue.votes}
+                    currentUpvotes={issue.upvotes}
+                    currentDownvotes={issue.downvotes}
                     onVoteUpdate={refreshVotes}
                   />
                 </td>
