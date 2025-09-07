@@ -2,5 +2,7 @@
   "css.lint.unknownAtRules": "ignore",
   "files.associations": {
     "*.css": "tailwindcss"
-  }
+  },
+  // show all spaces, tabs, and other invisible characters
+  "editor.renderWhitespace": "all"
 }
