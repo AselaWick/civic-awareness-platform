@@ -50,7 +50,7 @@ const GeofencingHandler = () => {
         .openPopup();
 
       L.circle(e.latlng, {
-        radius: radius,
+        radius: 5000,//5km
         color: 'blue',
         fillColor: '#cce5ff',
         fillOpacity: 0.3
