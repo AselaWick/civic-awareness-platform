@@ -7,6 +7,7 @@ import { supabase } from '../supabaseClient';
 import markerIcon from '/icons/marker-icon.png';
 import markerIcon2x from '/icons/marker-icon-2x.png';
 import markerShadow from '/icons/marker-shadow.png';
+import VoteButtons from './VoteButtons';
 const DefaultIcon = L.icon({
     iconUrl: markerIcon,
     iconRetinaUrl: markerIcon2x,
@@ -23,10 +24,10 @@ const GeofencingHandler = () => {
             const radius = e.accuracy / 2;
             L.marker(e.latlng)
                 .addTo(map)
-                .bindPopup(`📍 You are within ${Math.round(radius)} meters.`)
+                .bindPopup(`📍 You are within ${Math.round(5000)} meters.`)
                 .openPopup();
             L.circle(e.latlng, {
-                radius: radius,
+                radius: 5000, //5km
                 color: 'blue',
                 fillColor: '#cce5ff',
                 fillOpacity: 0.3
@@ -107,7 +108,19 @@ const MapView = ({ issues = [] }) => {
             border: '1px solid #1e40af',
             borderRadius: '8px',
             overflow: 'hidden',
-        }, children: _jsxs(MapContainer, { center: center, zoom: 6, scrollWheelZoom: true, style: { width: '100%', height: '100%', zIndex: 0 }, children: [_jsx(TileLayer, { attribution: '\u00A9 OpenStreetMap contributors', url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" }), _jsx(GeofencingHandler, {}), _jsx(MapClickHandler, {}), [...issues, ...mapIssues].map(issue => (_jsx(Marker, { position: [issue.location.lat, issue.location.lng], children: _jsxs(Popup, { children: [_jsx("strong", { children: issue.title }), _jsx("br", {}), issue.description] }) }, issue.id))), clickedLocation && (_jsx(Marker, { position: [clickedLocation.lat, clickedLocation.lng], children: _jsx(Popup, { children: _jsxs("form", { onSubmit: handleSubmit, style: { display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '200px', color: 'white' }, children: [_jsx("input", { type: "text", placeholder: "Title", value: title, onChange: e => setTitle(e.target.value), style: {
+        }, children: _jsxs(MapContainer, { center: center, zoom: 6, scrollWheelZoom: true, style: { width: '100%', height: '100%', zIndex: 0 }, children: [_jsx(TileLayer, { attribution: '\u00A9 OpenStreetMap contributors', url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" }), _jsx(GeofencingHandler, {}), _jsx(MapClickHandler, {}), [...issues, ...mapIssues].map(issue => {
+                    const isTrending = issue.upvotes >= 5;
+                    const isViral = issue.upvotes >= 8;
+                    const popupStyle = {
+                        fontSize: '0.875rem',
+                        lineHeight: '1.4',
+                        border: isViral ? '2px solid red' : isTrending ? '2px solid blue' : 'none',
+                        padding: '0.5rem',
+                        borderRadius: '6px',
+                        backgroundColor: '#f8fafc'
+                    };
+                    return (_jsx(Marker, { position: [issue.location.lat, issue.location.lng], children: _jsx(Popup, { children: _jsxs("div", { style: popupStyle, children: [_jsx("strong", { children: issue.title }), _jsx("br", {}), issue.description, _jsx("br", {}), _jsxs("div", { style: { marginTop: '0.5rem', fontWeight: 'bold' }, children: ["\uD83D\uDC4D ", issue.upvotes, " \u00A0\u00A0 \uD83D\uDC4E ", issue.downvotes ?? 0] }), _jsx("div", { style: { marginTop: '0.5rem' }, children: _jsx(VoteButtons, { issueId: issue.id, currentUpvotes: issue.upvotes, currentDownvotes: issue.downvotes ?? 0 }) }), isTrending && (_jsxs("div", { style: { color: isViral ? 'red' : 'blue', fontWeight: 'bold', marginTop: '0.25rem' }, children: ["\uD83D\uDD25 ", isViral ? 'Viral' : 'Trending'] }))] }) }) }, issue.id));
+                }), clickedLocation && (_jsx(Marker, { position: [clickedLocation.lat, clickedLocation.lng], children: _jsx(Popup, { children: _jsxs("form", { onSubmit: handleSubmit, style: { display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '200px', color: 'white' }, children: [_jsx("input", { type: "text", placeholder: "Title", value: title, onChange: e => setTitle(e.target.value), style: {
                                         padding: '0.25rem 0.5rem',
                                         border: '1px solid #1e40af',
                                         backgroundColor: '#0f172a',

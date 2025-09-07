@@ -13,6 +13,7 @@ import { supabase } from '../supabaseClient';
 import markerIcon from '/icons/marker-icon.png';
 import markerIcon2x from '/icons/marker-icon-2x.png';
 import markerShadow from '/icons/marker-shadow.png';
+import VoteButtons from './VoteButtons';
 
 const DefaultIcon = L.icon({
   iconUrl: markerIcon,
@@ -160,20 +161,46 @@ const MapView = ({ issues = [] }: MapViewProps) => {
         <GeofencingHandler />
         <MapClickHandler />
 
-       {[...issues, ...mapIssues].map(issue => (
-  <Marker key={issue.id} position={[issue.location.lat, issue.location.lng]}>
-    <Popup>
-      <div style={{ fontSize: '0.875rem', lineHeight: '1.4' }}>
-        <strong>{issue.title}</strong><br />
-        {issue.description}<br />
-        <div style={{ marginTop: '0.5rem' }}>
-          👍 <span style={{ fontWeight: 'bold' }}>{issue.upvotes}</span> &nbsp;
-          👎 <span style={{ fontWeight: 'bold' }}>{issue.downvotes ?? 0}</span>
+       {[...issues, ...mapIssues].map(issue => {
+  const isTrending = issue.upvotes >= 5;
+  const isViral = issue.upvotes >= 8;
+
+  const popupStyle = {
+    fontSize: '0.875rem',
+    lineHeight: '1.4',
+    border: isViral ? '2px solid red' : isTrending ? '2px solid blue' : 'none',
+    padding: '0.5rem',
+    borderRadius: '6px',
+    backgroundColor: '#f8fafc'
+  };
+
+  return (
+    <Marker key={issue.id} position={[issue.location.lat, issue.location.lng]}>
+      <Popup>
+        <div style={popupStyle}>
+          <strong>{issue.title}</strong><br />
+          {issue.description}<br />
+          <div style={{ marginTop: '0.5rem', fontWeight: 'bold' }}>
+            👍 {issue.upvotes} &nbsp;&nbsp; 👎 {issue.downvotes ?? 0}
+          </div>
+          <div style={{ marginTop: '0.5rem' }}>
+            <VoteButtons
+              issueId={issue.id}
+              currentUpvotes={issue.upvotes}
+              currentDownvotes={issue.downvotes ?? 0}
+            />
+          </div>
+          {isTrending && (
+            <div style={{ color: isViral ? 'red' : 'blue', fontWeight: 'bold', marginTop: '0.25rem' }}>
+              🔥 {isViral ? 'Viral' : 'Trending'}
+            </div>
+          )}
         </div>
-      </div>
-    </Popup>
-  </Marker>
-))}
+      </Popup>
+    </Marker>
+  );
+})}
+
 
 
         {clickedLocation && (
