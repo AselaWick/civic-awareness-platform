@@ -160,14 +160,21 @@ const MapView = ({ issues = [] }: MapViewProps) => {
         <GeofencingHandler />
         <MapClickHandler />
 
-        {[...issues, ...mapIssues].map(issue => (
-          <Marker key={issue.id} position={[issue.location.lat, issue.location.lng]}>
-            <Popup>
-              <strong>{issue.title}</strong><br />
-              {issue.description}
-            </Popup>
-          </Marker>
-        ))}
+       {[...issues, ...mapIssues].map(issue => (
+  <Marker key={issue.id} position={[issue.location.lat, issue.location.lng]}>
+    <Popup>
+      <div style={{ fontSize: '0.875rem', lineHeight: '1.4' }}>
+        <strong>{issue.title}</strong><br />
+        {issue.description}<br />
+        <div style={{ marginTop: '0.5rem' }}>
+          👍 <span style={{ fontWeight: 'bold' }}>{issue.upvotes}</span> &nbsp;
+          👎 <span style={{ fontWeight: 'bold' }}>{issue.downvotes ?? 0}</span>
+        </div>
+      </div>
+    </Popup>
+  </Marker>
+))}
+
 
         {clickedLocation && (
           <Marker position={[clickedLocation.lat, clickedLocation.lng]}>
