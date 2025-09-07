@@ -12,6 +12,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.57.0",
     "leaflet": "^1.9.4",
+    "leaflet.locatecontrol": "^0.84.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-leaflet": "^5.0.0",

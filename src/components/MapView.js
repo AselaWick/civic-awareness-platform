@@ -4,7 +4,6 @@ import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaf
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { supabase } from '../supabaseClient';
-// Custom marker icon setup
 import markerIcon from '/icons/marker-icon.png';
 import markerIcon2x from '/icons/marker-icon-2x.png';
 import markerShadow from '/icons/marker-shadow.png';
@@ -18,6 +17,30 @@ const DefaultIcon = L.icon({
     shadowSize: [41, 41],
 });
 L.Marker.prototype.options.icon = DefaultIcon;
+const GeofencingHandler = () => {
+    const map = useMapEvents({
+        locationfound(e) {
+            const radius = e.accuracy / 2;
+            L.marker(e.latlng)
+                .addTo(map)
+                .bindPopup(`📍 You are within ${Math.round(radius)} meters.`)
+                .openPopup();
+            L.circle(e.latlng, {
+                radius: radius,
+                color: 'blue',
+                fillColor: '#cce5ff',
+                fillOpacity: 0.3
+            }).addTo(map);
+        },
+        locationerror() {
+            alert('Location access denied or unavailable.');
+        }
+    });
+    useEffect(() => {
+        map.locate({ setView: true, maxZoom: 16 });
+    }, [map]);
+    return null;
+};
 const MapView = ({ issues = [] }) => {
     const center = [23.6, 58.5];
     const [mapIssues, setMapIssues] = useState([]);
@@ -25,19 +48,19 @@ const MapView = ({ issues = [] }) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [submitting, setSubmitting] = useState(false);
+    const fetchMapIssues = async () => {
+        const { data, error } = await supabase
+            .from('map_issues')
+            .select('*')
+            .gt('upvotes', 5);
+        if (error) {
+            console.error('❌ Error fetching map_issues:', error.message);
+        }
+        else {
+            setMapIssues(data || []);
+        }
+    };
     useEffect(() => {
-        const fetchMapIssues = async () => {
-            const { data, error } = await supabase
-                .from('map_issues')
-                .select('*')
-                .gt('upvotes', 5);
-            if (error) {
-                console.error('❌ Error fetching map_issues:', error.message);
-            }
-            else {
-                setMapIssues(data || []);
-            }
-        };
         fetchMapIssues();
     }, []);
     const MapClickHandler = () => {
@@ -53,22 +76,23 @@ const MapView = ({ issues = [] }) => {
         if (!clickedLocation || !title)
             return;
         setSubmitting(true);
-        const { error } = await supabase
+        const newIssue = {
+            title,
+            description,
+            location: clickedLocation,
+            timestamp: new Date().toISOString(),
+            upvotes: 0,
+            downvotes: 0
+        };
+        const { data, error } = await supabase
             .from('map_issues')
-            .insert([
-            {
-                title,
-                description,
-                location: clickedLocation,
-                timestamp: new Date().toISOString(),
-                upvotes: 0,
-                downvotes: 0
-            }
-        ]);
+            .insert([newIssue])
+            .select();
         if (error) {
             console.error('❌ Error submitting issue:', error.message);
         }
         else {
+            setMapIssues(prev => [...prev, ...(data || [])]);
             setTitle('');
             setDescription('');
             setClickedLocation(null);
@@ -83,7 +107,7 @@ const MapView = ({ issues = [] }) => {
             border: '1px solid #1e40af',
             borderRadius: '8px',
             overflow: 'hidden',
-        }, children: _jsxs(MapContainer, { center: center, zoom: 6, scrollWheelZoom: true, style: { width: '100%', height: '100%', zIndex: 0 }, children: [_jsx(TileLayer, { attribution: '\u00A9 OpenStreetMap contributors', url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" }), _jsx(MapClickHandler, {}), issues.map(issue => (_jsx(Marker, { position: [issue.location.lat, issue.location.lng], children: _jsxs(Popup, { children: [_jsx("strong", { children: issue.title }), _jsx("br", {}), issue.description] }) }, `main-${issue.id}`))), mapIssues.map(issue => (_jsx(Marker, { position: [issue.location.lat, issue.location.lng], children: _jsxs(Popup, { children: [_jsx("strong", { children: issue.title }), _jsx("br", {}), issue.description] }) }, `map-${issue.id}`))), clickedLocation && (_jsx(Marker, { position: [clickedLocation.lat, clickedLocation.lng], children: _jsx(Popup, { children: _jsxs("form", { onSubmit: handleSubmit, style: { display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '200px', color: 'white' }, children: [_jsx("input", { type: "text", placeholder: "Title", value: title, onChange: e => setTitle(e.target.value), style: {
+        }, children: _jsxs(MapContainer, { center: center, zoom: 6, scrollWheelZoom: true, style: { width: '100%', height: '100%', zIndex: 0 }, children: [_jsx(TileLayer, { attribution: '\u00A9 OpenStreetMap contributors', url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" }), _jsx(GeofencingHandler, {}), _jsx(MapClickHandler, {}), [...issues, ...mapIssues].map(issue => (_jsx(Marker, { position: [issue.location.lat, issue.location.lng], children: _jsxs(Popup, { children: [_jsx("strong", { children: issue.title }), _jsx("br", {}), issue.description] }) }, issue.id))), clickedLocation && (_jsx(Marker, { position: [clickedLocation.lat, clickedLocation.lng], children: _jsx(Popup, { children: _jsxs("form", { onSubmit: handleSubmit, style: { display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '200px', color: 'white' }, children: [_jsx("input", { type: "text", placeholder: "Title", value: title, onChange: e => setTitle(e.target.value), style: {
                                         padding: '0.25rem 0.5rem',
                                         border: '1px solid #1e40af',
                                         backgroundColor: '#0f172a',

@@ -39,6 +39,35 @@ interface MapViewProps {
   issues?: Issue[];
 }
 
+const GeofencingHandler = () => {
+  const map = useMapEvents({
+    locationfound(e) {
+      const radius = e.accuracy / 2;
+
+      L.marker(e.latlng)
+        .addTo(map)
+        .bindPopup(`📍 You are within ${Math.round(radius)} meters.`)
+        .openPopup();
+
+      L.circle(e.latlng, {
+        radius: radius,
+        color: 'blue',
+        fillColor: '#cce5ff',
+        fillOpacity: 0.3
+      }).addTo(map);
+    },
+    locationerror() {
+      alert('Location access denied or unavailable.');
+    }
+  });
+
+  useEffect(() => {
+    map.locate({ setView: true, maxZoom: 16 });
+  }, [map]);
+
+  return null;
+};
+
 const MapView = ({ issues = [] }: MapViewProps) => {
   const center: LatLngExpression = [23.6, 58.5];
   const [mapIssues, setMapIssues] = useState<Issue[]>([]);
@@ -91,7 +120,7 @@ const MapView = ({ issues = [] }: MapViewProps) => {
     const { data, error } = await supabase
       .from('map_issues')
       .insert([newIssue])
-      .select(); // fetch inserted row
+      .select();
 
     if (error) {
       console.error('❌ Error submitting issue:', error.message);
@@ -128,6 +157,7 @@ const MapView = ({ issues = [] }: MapViewProps) => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
+        <GeofencingHandler />
         <MapClickHandler />
 
         {[...issues, ...mapIssues].map(issue => (
