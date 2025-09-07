@@ -46,7 +46,7 @@ const GeofencingHandler = () => {
 
       L.marker(e.latlng)
         .addTo(map)
-        .bindPopup(`📍 You are within ${Math.round(radius)} meters.`)
+        .bindPopup(`📍 You are within ${Math.round(5000)} meters.`)
         .openPopup();
 
       L.circle(e.latlng, {
