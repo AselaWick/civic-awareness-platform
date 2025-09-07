@@ -15,7 +15,7 @@ import markerIcon from '/icons/marker-icon.png';
 import markerIcon2x from '/icons/marker-icon-2x.png';
 import markerShadow from '/icons/marker-shadow.png';
 
-// Set up the default Leaflet icon
+// Default Leaflet icon
 const DefaultIcon = L.icon({
   iconUrl: markerIcon,
   iconRetinaUrl: markerIcon2x,
@@ -49,7 +49,7 @@ interface MapViewProps {
 const GeofencingHandler = () => {
   const map = useMapEvents({
     locationfound(e) {
-      const fixedRadius = 5000;
+      const fixedRadius = 5000; // 5km
 
       L.marker(e.latlng)
         .addTo(map)
@@ -90,7 +90,7 @@ const MapView = ({ issues = [] }: MapViewProps) => {
   const [uploadedVideos, setUploadedVideos] = useState<string[]>([]);
   const [referenceLink, setReferenceLink] = useState<string>('');
 
-  // Fetch issues with >5 upvotes
+  // Fetch trending issues
   const fetchMapIssues = async () => {
     const { data, error } = await supabase
       .from('map_issues')
@@ -108,54 +108,57 @@ const MapView = ({ issues = [] }: MapViewProps) => {
     fetchMapIssues();
   }, []);
 
-  // Upload handlers
+  // Image upload handler
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
 
     const urls: string[] = [];
     for (const file of Array.from(files)) {
-      const { data, error } = await supabase.storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
         .from('issue-media')
         .upload(`images/${Date.now()}-${file.name}`, file);
 
-      if (error) {
-        console.error('❌ Image upload error:', error.message);
-      } else if (data) {
-        const {  data: publicData } = supabase.storage
-          .from('issue-media')
-          .getPublicUrl(data.path);
-        urls.push(publicData.publicUrl);
+      if (uploadError) {
+        console.error('❌ Image upload error:', uploadError.message);
+        continue;
       }
-    }
 
+      const { data: publicData } = supabase.storage
+        .from('issue-media')
+        .getPublicUrl(uploadData.path);
+
+      urls.push(publicData.publicUrl);
+    }
     setUploadedImages(urls);
   };
 
+  // Video upload handler
   const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
 
     const urls: string[] = [];
     for (const file of Array.from(files)) {
-      const { data, error } = await supabase.storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
         .from('issue-media')
         .upload(`videos/${Date.now()}-${file.name}`, file);
 
-      if (error) {
-        console.error('❌ Video upload error:', error.message);
-      } else if (data) {
-        const { data: publicData } = supabase.storage
-          .from('issue-media')
-          .getPublicUrl(data.path);
-        urls.push(publicData.publicUrl);
+      if (uploadError) {
+        console.error('❌ Video upload error:', uploadError.message);
+        continue;
       }
-    }
 
+      const { data: publicData } = supabase.storage
+        .from('issue-media')
+        .getPublicUrl(uploadData.path);
+
+      urls.push(publicData.publicUrl);
+    }
     setUploadedVideos(urls);
   };
 
-  // Submit a new issue with media
+  // Submit new issue with media
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!clickedLocation || !title) {
@@ -187,7 +190,7 @@ const MapView = ({ issues = [] }: MapViewProps) => {
       console.error('❌ Error submitting issue:', error.message);
     } else {
       setMapIssues(prev => [...prev, ...(data ?? [])]);
-      // Reset form + media state
+      // Reset form and media state
       setTitle('');
       setDescription('');
       setClickedLocation(null);
@@ -199,7 +202,7 @@ const MapView = ({ issues = [] }: MapViewProps) => {
     setSubmitting(false);
   };
 
-  // Capture click for new issue
+  // Capture map clicks
   const MapClickHandler = () => {
     useMapEvents({
       click(e) {
@@ -231,7 +234,6 @@ const MapView = ({ issues = [] }: MapViewProps) => {
           attribution="&copy; OpenStreetMap contributors"
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-
         <GeofencingHandler />
         <MapClickHandler />
 
@@ -249,10 +251,7 @@ const MapView = ({ issues = [] }: MapViewProps) => {
           };
 
           return (
-            <Marker
-              key={issue.id}
-              position={[issue.location.lat, issue.location.lng]}
-            >
+            <Marker key={issue.id} position={[issue.location.lat, issue.location.lng]}>
               <Popup>
                 <div style={popupStyle}>
                   <strong>{issue.title}</strong>
@@ -262,7 +261,6 @@ const MapView = ({ issues = [] }: MapViewProps) => {
                   <div style={{ marginTop: '0.5rem', fontWeight: 'bold' }}>
                     👍 {issue.upvotes} &nbsp;&nbsp; 👎 {issue.downvotes ?? 0}
                   </div>
-
                   <div style={{ marginTop: '0.5rem' }}>
                     <VoteButtons
                       issueId={issue.id}
