@@ -128,6 +128,7 @@ const MapView = ({ issues = [] }) => {
             timestamp: new Date().toISOString(),
             upvotes: 0,
             downvotes: 0,
+            location_name: locationName,
             media: {
                 images: uploadedImages,
                 videos: uploadedVideos,
@@ -197,7 +198,7 @@ const MapView = ({ issues = [] }) => {
                         borderRadius: '6px',
                         backgroundColor: '#f8fafc'
                     };
-                    return (_jsx(Marker, { position: [issue.location.lat, issue.location.lng], children: _jsx(Popup, { children: _jsxs("div", { style: popupStyle, children: [_jsx("strong", { children: issue.title }), _jsx("br", {}), issue.description, _jsx("br", {}), _jsxs("div", { style: { marginTop: '0.5rem', fontWeight: 'bold' }, children: ["\uD83D\uDC4D ", issue.upvotes, " \u00A0\u00A0 \uD83D\uDC4E ", issue.downvotes ?? 0] }), _jsx("div", { style: { marginTop: '0.5rem' }, children: _jsx(VoteButtons, { issueId: issue.id, currentUpvotes: issue.upvotes, currentDownvotes: issue.downvotes ?? 0 }) }), issue.media?.images?.map((url, i) => (_jsx("img", { src: url, alt: `image-${i}`, style: { width: '100%', marginTop: '0.5rem' } }, i))), issue.media?.videos?.map((url, i) => (_jsx("video", { src: url, controls: true, style: { width: '100%', marginTop: '0.5rem' } }, i))), issue.media?.links?.map((link, i) => (_jsxs("a", { href: link, target: "_blank", rel: "noopener noreferrer", style: { display: 'block', marginTop: '0.5rem', color: 'blue' }, children: ["\uD83D\uDCCE Reference ", i + 1] }, i))), isTrending && (_jsxs("div", { style: {
+                    return (_jsx(Marker, { position: [issue.location.lat, issue.location.lng], children: _jsx(Popup, { children: _jsxs("div", { style: popupStyle, children: [_jsx("div", { style: { fontSize: '0.75rem', color: '#555' }, children: issue.location_name }), _jsx("strong", { children: issue.title }), _jsx("br", {}), issue.description, _jsx("br", {}), _jsxs("div", { style: { marginTop: '0.5rem', fontWeight: 'bold' }, children: ["\uD83D\uDC4D ", issue.upvotes, " \u00A0\u00A0 \uD83D\uDC4E ", issue.downvotes ?? 0] }), _jsx("div", { style: { marginTop: '0.5rem' }, children: _jsx(VoteButtons, { issueId: issue.id, currentUpvotes: issue.upvotes, currentDownvotes: issue.downvotes ?? 0 }) }), issue.media?.images?.map((url, i) => (_jsx("img", { src: url, alt: `image-${i}`, style: { width: '100%', marginTop: '0.5rem' } }, i))), issue.media?.videos?.map((url, i) => (_jsx("video", { src: url, controls: true, style: { width: '100%', marginTop: '0.5rem' } }, i))), issue.media?.links?.map((link, i) => (_jsxs("a", { href: link, target: "_blank", rel: "noopener noreferrer", style: { display: 'block', marginTop: '0.5rem', color: 'blue' }, children: ["\uD83D\uDCCE Reference ", i + 1] }, i))), isTrending && (_jsxs("div", { style: {
                                             color: isViral ? 'red' : 'blue',
                                             fontWeight: 'bold',
                                             marginTop: '0.25rem'

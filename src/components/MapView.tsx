@@ -33,6 +33,7 @@ interface Issue {
   description: string;
   location: { lat: number; lng: number };
   timestamp?: string;
+  location_name?: string; 
   upvotes: number;
   downvotes?: number;
   media?: {
@@ -176,6 +177,7 @@ const MapView = ({ issues = [] }: MapViewProps) => {
       timestamp: new Date().toISOString(),
       upvotes: 0,
       downvotes: 0,
+      location_name: locationName,
       media: {
         images: uploadedImages,
         videos: uploadedVideos,
@@ -278,6 +280,9 @@ const MapClickHandler = () => {
             <Marker key={issue.id} position={[issue.location.lat, issue.location.lng]}>
               <Popup>
                 <div style={popupStyle}>
+                  <div style={{ fontSize: '0.75rem', color: '#555' }}>
+                    {issue.location_name}
+                  </div>
                   <strong>{issue.title}</strong>
                   <br />
                   {issue.description}
