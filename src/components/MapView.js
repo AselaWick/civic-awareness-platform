@@ -208,7 +208,7 @@ const MapView = ({ issues = [] }) => {
                                 gap: '0.5rem',
                                 width: '200px',
                                 color: 'white'
-                            }, children: [_jsx("input", { type: "text", placeholder: "Title", value: title, onChange: e => setTitle(e.target.value), style: {
+                            }, children: [_jsx("div", { style: { marginBottom: '0.5rem', fontSize: '0.9rem' } }), _jsx("input", { type: "text", placeholder: "Title", value: title, onChange: e => setTitle(e.target.value), style: {
                                         padding: '0.25rem 0.5rem',
                                         border: '1px solid #1e40af',
                                         backgroundColor: '#0f172a',

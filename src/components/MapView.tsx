@@ -353,6 +353,10 @@ const MapClickHandler = () => {
                   color: 'white'
                 }}
               >
+                {/* SHOW RESOLVED ADDRESS HERE */}
+                <div style={{ marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+                </div>
+                {/* Title field */}
                 <input
                   type="text"
                   placeholder="Title"
