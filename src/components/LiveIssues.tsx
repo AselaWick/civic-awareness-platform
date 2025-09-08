@@ -17,6 +17,8 @@ interface Issue {
 const LiveIssues = () => {
   const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+
 
   useEffect(() => {
     const fetchIssues = async () => {
@@ -75,6 +77,17 @@ const LiveIssues = () => {
         <p className="text-sm text-gray-600">No issues reported yet.</p>
       ) : (
         <div className="flex flex-col lg:flex-row gap-6">
+
+          <div className="mb-4">
+  <input
+    type="text"
+    placeholder="Search by location, title, or description..."
+    value={searchQuery}
+    onChange={e => setSearchQuery(e.target.value)}
+    className="w-full lg:w-1/2 px-4 py-2 border border-gray-300 rounded shadow-sm text-sm"
+  />
+</div>
+
           {/* Table Section */}
           <div className="lg:w-1/2 overflow-x-auto">
             <table className="min-w-full bg-white border border-gray-300 rounded">
