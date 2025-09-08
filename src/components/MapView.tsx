@@ -89,6 +89,8 @@ const MapView = ({ issues = [] }: MapViewProps) => {
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [uploadedVideos, setUploadedVideos] = useState<string[]>([]);
   const [referenceLink, setReferenceLink] = useState<string>('');
+  const [locationName, setLocationName] = useState<string>('');
+
 
   // Fetch trending issues
   const fetchMapIssues = async () => {
@@ -202,15 +204,37 @@ const MapView = ({ issues = [] }: MapViewProps) => {
     setSubmitting(false);
   };
 
-  // Capture map clicks
-  const MapClickHandler = () => {
-    useMapEvents({
-      click(e) {
-        setClickedLocation({ lat: e.latlng.lat, lng: e.latlng.lng });
+ // Replace MapClickHandler with this:
+const MapClickHandler = () => {
+  useMapEvents({
+    async click(e) {
+      const { lat, lng } = e.latlng;
+
+      // 1. Fetch address data from Nominatim
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+        );
+        const data = await res.json();
+
+        // 2. Extract city/town/village + country
+        const addr = data.address;
+        const city =
+          addr.city || addr.town || addr.village || addr.county || '';
+        const country = addr.country || '';
+        setLocationName(`${city}${city && country ? ', ' : ''}${country}`);
+      } catch (err) {
+        console.warn('Reverse geocode failed', err);
+        setLocationName('');
       }
-    });
-    return null;
-  };
+
+      // 3. Store raw coords and show form
+      setClickedLocation({ lat, lng });
+    }
+  });
+  return null;
+};
+
 
   return (
     <div
