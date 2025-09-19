@@ -2,48 +2,65 @@ import React, { useState } from 'react';
 import { supabase } from '../supabaseClient';
 import Button from './Button';
 
-const IssueForm = () => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [type, setType] = useState('');  
-  const [lat, setLat] = useState('');
-  const [lng, setLng] = useState('');
-  const [loading, setLoading] = useState(false);
+// Define a shorthand for your enum type
+type IssueType = 'news' | 'emergency' | 'sport' | 'conflicts' | 'other';
+
+const IssueForm: React.FC = () => {
+  const [title, setTitle] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  // Allow '' in the union so useState('') is legal
+  const [issueType, setIssueType] = useState<IssueType | ''>('');
+  const [lat, setLat] = useState<string>('');
+  const [lng, setLng] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Simple validation
+    if (!title || !description || !issueType || !lat || !lng) {
+      alert('Please fill in all fields before submitting.');
+      return;
+    }
+
     setLoading(true);
 
-    const { error } = await supabase
-      .from('map_issues')     // make sure this matches your table name
-      .insert([
-        {
-          title,
-          description,
-          type,                // will be one of 'news'|'emergency'|'sport'|'conflicts'|'other'
-          location: {
-            lat: parseFloat(lat),
-            lng: parseFloat(lng),
-          },
-          upvotes: 0,
-          downvotes: 0,
-        },
-      ]);
+    const newIssue = {
+      title,
+      description,
+      type: issueType,               // ← matches your `type` enum column
+      location: {
+        lat: parseFloat(lat),
+        lng: parseFloat(lng),
+      },
+      upvotes: 0,
+      downvotes: 0,
+    };
+
+    console.log('Inserting payload:', newIssue);
+
+    const { data, error } = await supabase
+      .from('map_issues')           // ← your exact table name
+      .insert([newIssue])
+      .select();                    // ← return the inserted row
 
     setLoading(false);
 
     if (error) {
       console.error('❌ Submission error:', error.message);
       alert('Submission failed: ' + error.message);
-    } else {
-      alert('✅ Issue submitted!');
-      // Reset form
-      setTitle('');
-      setDescription('');
-      setType('');
-      setLat('');
-      setLng('');
+      return;
     }
+
+    console.log('✅ Inserted row:', data?.[0]);
+    alert('Issue submitted!');
+
+    // Reset form
+    setTitle('');
+    setDescription('');
+    setIssueType('');
+    setLat('');
+    setLng('');
   };
 
   return (
@@ -81,8 +98,10 @@ const IssueForm = () => {
       </label>
       <select
         id="issue-type"
-        value={type}
-        onChange={e => setType(e.target.value)}
+        value={issueType}
+        onChange={e =>
+          setIssueType(e.target.value as IssueType)
+        }
         className="w-full p-2 border rounded mb-4 bg-white"
         required
       >
@@ -124,7 +143,8 @@ const IssueForm = () => {
 
       <Button
         text={loading ? 'Submitting...' : 'Submit Issue'}
-        type="submit" onClick={function (): void {
+        type="submit" // no extra onClick
+        onClick={function (): void {
           throw new Error('Function not implemented.');
         } }      />
     </form>
