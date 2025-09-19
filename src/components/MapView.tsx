@@ -84,6 +84,7 @@ const MapView = ({ issues = [] }: MapViewProps) => {
   const [clickedLocation, setClickedLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [type, setType] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
   // Media state
@@ -361,6 +362,28 @@ const MapClickHandler = () => {
                 {/* SHOW RESOLVED ADDRESS HERE */}
                 <div style={{ marginBottom: '0.5rem', fontSize: '0.9rem' }}>
                 </div>
+
+                <select
+                   value={type}
+                   onChange={e => setType(e.target.value)}
+                   required
+                   style={{
+                    padding: '0.25rem 0.5rem',
+                    border: '1px solid #1e40af',
+                    backgroundColor: '#0f172a',
+                    color: 'white',
+                    borderRadius: '4px',
+                    fontSize: '0.875rem'
+                  }}
+                >
+                  <option value="" disabled>— Select a type —</option>
+                  <option value="news">News</option>
+                  <option value="emergency">Emergency</option>
+                  <option value="sport">Sport</option>
+                  <option value="conflicts">Conflicts</option>
+                  <option value="other">Other</option>
+                </select>
+
                 {/* Title field */}
                 <input
                   type="text"

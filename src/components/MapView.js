@@ -50,6 +50,7 @@ const MapView = ({ issues = [] }) => {
     const [clickedLocation, setClickedLocation] = useState(null);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [type, setType] = useState('');
     const [submitting, setSubmitting] = useState(false);
     // Media state
     const [uploadedImages, setUploadedImages] = useState([]);
@@ -209,7 +210,14 @@ const MapView = ({ issues = [] }) => {
                                 gap: '0.5rem',
                                 width: '200px',
                                 color: 'white'
-                            }, children: [_jsx("div", { style: { marginBottom: '0.5rem', fontSize: '0.9rem' } }), _jsx("input", { type: "text", placeholder: "Title", value: title, onChange: e => setTitle(e.target.value), style: {
+                            }, children: [_jsx("div", { style: { marginBottom: '0.5rem', fontSize: '0.9rem' } }), _jsxs("select", { value: type, onChange: e => setType(e.target.value), required: true, style: {
+                                        padding: '0.25rem 0.5rem',
+                                        border: '1px solid #1e40af',
+                                        backgroundColor: '#0f172a',
+                                        color: 'white',
+                                        borderRadius: '4px',
+                                        fontSize: '0.875rem'
+                                    }, children: [_jsx("option", { value: "", disabled: true, children: "\u2014 Select a type \u2014" }), _jsx("option", { value: "news", children: "News" }), _jsx("option", { value: "emergency", children: "Emergency" }), _jsx("option", { value: "sport", children: "Sport" }), _jsx("option", { value: "conflicts", children: "Conflicts" }), _jsx("option", { value: "other", children: "Other" })] }), _jsx("input", { type: "text", placeholder: "Title", value: title, onChange: e => setTitle(e.target.value), style: {
                                         padding: '0.25rem 0.5rem',
                                         border: '1px solid #1e40af',
                                         backgroundColor: '#0f172a',
