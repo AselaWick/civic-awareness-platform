@@ -149,7 +149,9 @@ const LiveIssues = () => {
                       <td className="px-4 py-2 text-sm text-gray-800">
                         {issue.description}
                       </td>
-                      <td className="px-4 py-2 text-sm text-gray-800">{issue.type}</td>
+                      <td className="px-4 py-2 text-sm text-gray-800">
+                       {issue.type}
+                      </td>
                         
                       <td className="px-4 py-2 text-sm text-gray-800">
                         {displayLocation}
