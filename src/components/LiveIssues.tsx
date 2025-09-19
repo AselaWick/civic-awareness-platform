@@ -61,6 +61,15 @@ const LiveIssues = () => {
       supabase.removeChannel(subscription);
     };
   }, []);
+  // 🔍 Filter issues based on search query
+  const filteredIssues = issues.filter(issue => {
+    const query = searchQuery.toLowerCase();
+    return (
+      issue.title.toLowerCase().includes(query) ||
+      issue.description.toLowerCase().includes(query) ||
+      issue.location_name?.toLowerCase().includes(query)
+    );
+  });
 
   // Only show strong-feedback issues on the map
   const mapEligibleIssues = issues.filter(
@@ -101,8 +110,16 @@ const LiveIssues = () => {
                   <th className="px-4 py-2 text-left text-sm font-semibold text-gray-700">Actions</th>
                 </tr>
               </thead>
+
               <tbody>
-                {issues.map(issue => {
+               {filteredIssues.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="px-4 py-2 text-sm text-gray-500 text-center">
+                      No matching issues found.
+                    </td>
+                  </tr>
+                ) : (
+                  filteredIssues.map(issue => {
                   const isMapVisible =
                     issue.upvotes >= 5 || issue.downvotes >= 5;
 
@@ -142,7 +159,7 @@ const LiveIssues = () => {
                       </td>
                     </tr>
                   );
-                })}
+                }))}
               </tbody>
             </table>
           </div>
