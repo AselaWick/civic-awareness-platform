@@ -1,48 +1,59 @@
-import React, { useState } from 'react';
-import { supabase } from '../supabaseClient';
-import Button from './Button';
+import React, { useState } from 'react'
+import { supabase } from '../supabaseClient'
+import Button from './Button'
 
 const IssueForm = () => {
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [lat, setLat] = useState('');
-  const [lng, setLng] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [lat, setLat] = useState('')
+  const [lng, setLng] = useState('')
+  const [type, setType] = useState('')           // ← new state
+  const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
+    e.preventDefault()
+    setLoading(true)
 
-    const { error } = await supabase.from('issues').insert([
-      {
-        title,
-        description,
-        location: {
-          lat: parseFloat(lat),
-          lng: parseFloat(lng)
+    const { error } = await supabase
+      .from('map_issues')                       // ← updated table name
+      .insert([
+        {
+          title,
+          description,
+          type,                                 // ← now includes 'other'
+          location: {
+            lat: parseFloat(lat),
+            lng: parseFloat(lng),
+          },
+          upvotes: 0,
+          downvotes: 0,
         },
-        upvotes: 0,
-        downvotes: 0
-      }
-    ]);
+      ])
 
-    setLoading(false);
+    setLoading(false)
 
     if (error) {
-      console.error('❌ Submission error:', error.message);
-      alert('❌ Submission failed: ' + error.message);
+      console.error('❌ Submission error:', error.message)
+      alert('❌ Submission failed: ' + error.message)
     } else {
-      alert('✅ Issue submitted successfully!');
-      setTitle('');
-      setDescription('');
-      setLat('');
-      setLng('');
+      alert('✅ Issue submitted successfully!')
+      // reset form
+      setTitle('')
+      setDescription('')
+      setLat('')
+      setLng('')
+      setType('')                             // ← reset the type
     }
-  };
+  }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-gray-200 p-4 rounded shadow-md mb-6">
-      <label htmlFor="issue-title" className="block mb-2 font-semibold">Title</label>
+    <form
+      onSubmit={handleSubmit}
+      className="bg-gray-200 p-4 rounded shadow-md mb-6"
+    >
+      <label htmlFor="issue-title" className="block mb-2 font-semibold">
+        Title
+      </label>
       <input
         id="issue-title"
         name="title"
@@ -52,10 +63,12 @@ const IssueForm = () => {
         placeholder="Issue title"
         className="w-full p-2 border rounded mb-4"
         required
-        autoComplete="title"
+        autoComplete="off"
       />
 
-      <label htmlFor="issue-description" className="block mb-2 font-semibold">Description</label>
+      <label htmlFor="issue-description" className="block mb-2 font-semibold">
+        Description
+      </label>
       <textarea
         id="issue-description"
         name="description"
@@ -64,10 +77,33 @@ const IssueForm = () => {
         placeholder="Describe the issue..."
         className="w-full p-2 border rounded mb-4"
         required
-        autoComplete="description"
+        autoComplete="off"
       />
 
-      <label htmlFor="issue-lat" className="block mb-2 font-semibold">Latitude</label>
+      <label htmlFor="issue-type" className="block mb-2 font-semibold">
+        Type
+      </label>
+      <select
+        id="issue-type"
+        name="type"
+        value={type}
+        onChange={e => setType(e.target.value)}
+        className="w-full p-2 border rounded mb-4 bg-white"
+        required
+      >
+        <option value="" disabled>
+          — Select a type —
+        </option>
+        <option value="news">News</option>
+        <option value="emergency">Emergency</option>
+        <option value="sport">Sport</option>
+        <option value="conflicts">Conflicts</option>
+        <option value="other">Other</option>   {/* ← added */}
+      </select>
+
+      <label htmlFor="issue-lat" className="block mb-2 font-semibold">
+        Latitude
+      </label>
       <input
         id="issue-lat"
         name="lat"
@@ -80,7 +116,9 @@ const IssueForm = () => {
         autoComplete="off"
       />
 
-      <label htmlFor="issue-lng" className="block mb-2 font-semibold">Longitude</label>
+      <label htmlFor="issue-lng" className="block mb-2 font-semibold">
+        Longitude
+      </label>
       <input
         id="issue-lng"
         name="lng"
@@ -99,7 +137,7 @@ const IssueForm = () => {
         onClick={() => {}}
       />
     </form>
-  );
-};
+  )
+}
 
-export default IssueForm;
+export default IssueForm

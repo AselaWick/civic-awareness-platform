@@ -8,6 +8,7 @@ interface Issue {
   title: string;
   description: string;
   location: { lat: number; lng: number };
+  type: 'news' | 'emergency' | 'sport' | 'conflicts' | 'other';
   timestamp: string;
   upvotes: number;
   downvotes: number;
@@ -18,6 +19,7 @@ const LiveIssues = () => {
   const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [filterType, setFilterType] = useState<' ' | Issue['type']>(' ');
 
 
   useEffect(() => {
@@ -61,14 +63,18 @@ const LiveIssues = () => {
       supabase.removeChannel(subscription);
     };
   }, []);
-  // 🔍 Filter issues based on search query
+  // 1. Filter by type + search text
   const filteredIssues = issues.filter(issue => {
-    const query = searchQuery.toLowerCase();
-    return (
-      issue.title.toLowerCase().includes(query) ||
-      issue.description.toLowerCase().includes(query) ||
-      issue.location_name?.toLowerCase().includes(query)
-    );
+    const q = searchQuery.toLowerCase();
+    const matchesText =
+      issue.title.toLowerCase().includes(q) ||
+      issue.description.toLowerCase().includes(q) ||
+      issue.location_name?.toLowerCase().includes(q);
+
+    const matchesType =
+      filterType === ' ' || issue.type === filterType;
+
+    return matchesText && matchesType;
   });
 
   // Only show strong-feedback issues on the map
