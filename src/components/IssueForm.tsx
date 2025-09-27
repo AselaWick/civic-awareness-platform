@@ -24,6 +24,8 @@ const IssueForm: React.FC = () => {
     }
 
     setLoading(true);
+    
+   console.log('Selected issueType:', issueType);
 
     const newIssue = {
       title,
