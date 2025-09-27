@@ -6,7 +6,7 @@ const IssueForm = () => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [type, setType] = useState('');
-    const [lat, setLat] = useState('');
+    const [lat, setLat] = useState('other');
     const [lng, setLng] = useState('');
     const [loading, setLoading] = useState(false);
     const handleSubmit = async (e) => {
