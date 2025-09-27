@@ -2,13 +2,12 @@ import React, { useState } from 'react';
 import { supabase } from '../supabaseClient';
 import Button from './Button';
 
-// Define a shorthand for your enum type
+// Define your enum type
 type IssueType = 'news' | 'emergency' | 'sport' | 'conflicts' | 'other';
 
 const IssueForm: React.FC = () => {
   const [title, setTitle] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-  // Allow '' in the union so useState('') is legal
   const [issueType, setIssueType] = useState<IssueType | ''>('');
   const [lat, setLat] = useState<string>('');
   const [lng, setLng] = useState<string>('');
@@ -17,20 +16,20 @@ const IssueForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Simple validation
+    // Basic validation
     if (!title || !description || !issueType || !lat || !lng) {
       alert('Please fill in all fields before submitting.');
       return;
     }
 
     setLoading(true);
-    
-   console.log('Selected issueType:', issueType);
+
+    console.log('Selected issueType:', issueType);
 
     const newIssue = {
       title,
       description,
-      type: issueType,               // ← matches your `type` enum column
+      issue_type: issueType, // ✅ matches Supabase column name
       location: {
         lat: parseFloat(lat),
         lng: parseFloat(lng),
@@ -42,9 +41,9 @@ const IssueForm: React.FC = () => {
     console.log('Inserting payload:', newIssue);
 
     const { data, error } = await supabase
-      .from('map_issues')           // ← your exact table name
+      .from('map_issues')
       .insert([newIssue])
-      .select();                    // ← return the inserted row
+      .select();
 
     setLoading(false);
 
@@ -55,7 +54,7 @@ const IssueForm: React.FC = () => {
     }
 
     console.log('✅ Inserted row:', data?.[0]);
-    alert('Issue submitted!');
+    alert('✅ Issue submitted!');
 
     // Reset form
     setTitle('');
@@ -101,9 +100,7 @@ const IssueForm: React.FC = () => {
       <select
         id="issue-type"
         value={issueType}
-        onChange={e =>
-          setIssueType(e.target.value as IssueType)
-        }
+        onChange={e => setIssueType(e.target.value as IssueType)}
         className="w-full p-2 border rounded mb-4 bg-white"
         required
       >
@@ -145,10 +142,9 @@ const IssueForm: React.FC = () => {
 
       <Button
         text={loading ? 'Submitting...' : 'Submit Issue'}
-        type="submit" // no extra onClick
-        onClick={function (): void {
-          throw new Error('Function not implemented.');
-        } }      />
+        type="submit"
+        onClick={() => {}}
+      />
     </form>
   );
 };
