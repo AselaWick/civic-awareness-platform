@@ -18,7 +18,7 @@ const IssueForm = () => {
             {
                 title,
                 description,
-                type, // will be one of 'news'|'emergency'|'sport'|'conflicts'|'other'
+                issue_type: type, // will be one of 'news'|'emergency'|'sport'|'conflicts'|'other'
                 location: {
                     lat: parseFloat(lat),
                     lng: parseFloat(lng),
