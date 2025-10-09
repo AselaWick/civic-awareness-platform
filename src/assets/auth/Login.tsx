@@ -1,53 +1,61 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { supabase } from '../../supabaseClient';
 
-export default function Login() {
+const Login = () => {
   const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
-  const handleEmailLogin = async () => {
-    setLoading(true);
+  const handleLogin = async () => {
     const { error } = await supabase.auth.signInWithOtp({ email });
     if (error) {
-      setMessage(`Error: ${error.message}`);
+      setMessage('Login failed: ' + error.message);
     } else {
       setMessage('Check your email for the login link.');
     }
-    setLoading(false);
-  };
-
-  const handleGoogleLogin = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: 'https://civic-awareness-platform.vercel.app/login/callback'
-      }
-    });
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: 'auto', padding: '2rem' }}>
-      <h2>Login to Civic Awareness</h2>
-
+    <div style={{
+      backgroundColor: '#0f172a',
+      color: 'white',
+      minHeight: '100vh',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: '2rem'
+    }}>
+      <h1 style={{ fontSize: '2rem', marginBottom: '1rem' }}>Login to Civic Awareness</h1>
       <input
         type="email"
         placeholder="Enter your email"
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        style={{ width: '100%', padding: '0.5rem', marginBottom: '1rem' }}
+        onChange={e => setEmail(e.target.value)}
+        style={{
+          padding: '0.5rem',
+          borderRadius: '0.375rem',
+          border: 'none',
+          marginBottom: '1rem',
+          width: '300px'
+        }}
       />
-      <button onClick={handleEmailLogin} disabled={loading} style={{ width: '100%', marginBottom: '1rem' }}>
-        {loading ? 'Sending...' : 'Login via Email'}
+      <button
+        onClick={handleLogin}
+        style={{
+          padding: '0.5rem 1rem',
+          borderRadius: '0.375rem',
+          backgroundColor: '#1d4ed8',
+          color: 'white',
+          fontWeight: '600',
+          border: 'none',
+          cursor: 'pointer'
+        }}
+      >
+        Send Login Link
       </button>
-
-      <hr style={{ margin: '2rem 0' }} />
-
-      <button onClick={handleGoogleLogin} style={{ width: '100%' }}>
-        Login with Google
-      </button>
-
-      {message && <p style={{ marginTop: '1rem', color: 'green' }}>{message}</p>}
+      {message && <p style={{ marginTop: '1rem' }}>{message}</p>}
     </div>
   );
-}
+};
+
+export default Login;

@@ -1,28 +1,41 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState } from 'react';
 import { supabase } from '../../supabaseClient';
-export default function Login() {
+const Login = () => {
     const [email, setEmail] = useState('');
-    const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState('');
-    const handleEmailLogin = async () => {
-        setLoading(true);
+    const handleLogin = async () => {
         const { error } = await supabase.auth.signInWithOtp({ email });
         if (error) {
-            setMessage(`Error: ${error.message}`);
+            setMessage('Login failed: ' + error.message);
         }
         else {
             setMessage('Check your email for the login link.');
         }
-        setLoading(false);
     };
-    const handleGoogleLogin = async () => {
-        await supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-                redirectTo: 'https://civic-awareness-platform.vercel.app/login/callback'
-            }
-        });
-    };
-    return (_jsxs("div", { style: { maxWidth: '400px', margin: 'auto', padding: '2rem' }, children: [_jsx("h2", { children: "Login to Civic Awareness" }), _jsx("input", { type: "email", placeholder: "Enter your email", value: email, onChange: (e) => setEmail(e.target.value), style: { width: '100%', padding: '0.5rem', marginBottom: '1rem' } }), _jsx("button", { onClick: handleEmailLogin, disabled: loading, style: { width: '100%', marginBottom: '1rem' }, children: loading ? 'Sending...' : 'Login via Email' }), _jsx("hr", { style: { margin: '2rem 0' } }), _jsx("button", { onClick: handleGoogleLogin, style: { width: '100%' }, children: "Login with Google" }), message && _jsx("p", { style: { marginTop: '1rem', color: 'green' }, children: message })] }));
-}
+    return (_jsxs("div", { style: {
+            backgroundColor: '#0f172a',
+            color: 'white',
+            minHeight: '100vh',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '2rem'
+        }, children: [_jsx("h1", { style: { fontSize: '2rem', marginBottom: '1rem' }, children: "Login to Civic Awareness" }), _jsx("input", { type: "email", placeholder: "Enter your email", value: email, onChange: e => setEmail(e.target.value), style: {
+                    padding: '0.5rem',
+                    borderRadius: '0.375rem',
+                    border: 'none',
+                    marginBottom: '1rem',
+                    width: '300px'
+                } }), _jsx("button", { onClick: handleLogin, style: {
+                    padding: '0.5rem 1rem',
+                    borderRadius: '0.375rem',
+                    backgroundColor: '#1d4ed8',
+                    color: 'white',
+                    fontWeight: '600',
+                    border: 'none',
+                    cursor: 'pointer'
+                }, children: "Send Login Link" }), message && _jsx("p", { style: { marginTop: '1rem' }, children: message })] }));
+};
+export default Login;
