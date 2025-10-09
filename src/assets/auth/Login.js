@@ -1,9 +1,11 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 const Login = () => {
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
+    const navigate = useNavigate();
     const handleLogin = async () => {
         const { error } = await supabase.auth.signInWithOtp({ email });
         if (error) {
@@ -13,6 +15,22 @@ const Login = () => {
             setMessage('Check your email for the login link.');
         }
     };
+    // Redirect to /home if session is active
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session) {
+                navigate('/map');
+            }
+        });
+        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+            if (session) {
+                navigate('/map');
+            }
+        });
+        return () => {
+            listener.subscription.unsubscribe();
+        };
+    }, []);
     return (_jsxs("div", { style: {
             backgroundColor: '#0f172a',
             color: 'white',
