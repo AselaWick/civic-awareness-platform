@@ -1,5 +1,42 @@
-body {
+/* src/App.css - minimal global styles to ensure full-height Leaflet map and sane defaults */
+
+:root, html, body, #root {
+  height: 100%;
   margin: 0;
-  font-family: sans-serif;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   background-color: rgb(70, 140, 144);
+  color: #111827;
+}
+
+/* Ensure MapView's root can expand to viewport height */
+.mapview-root {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Leaflet default container height fallback */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+}
+
+/* Small utility to visually confirm component render during debugging */
+.mapview-debug-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 9999;
+  color: white;
+  background: rgba(0,0,0,0.4);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
 }

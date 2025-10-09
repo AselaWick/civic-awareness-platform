@@ -1,3 +1,4 @@
+// src/components/MapView.tsx
 import React, { useEffect, useState } from 'react';
 import {
   MapContainer,
@@ -33,7 +34,7 @@ interface Issue {
   description: string;
   location: { lat: number; lng: number };
   timestamp?: string;
-  location_name?: string; 
+  location_name?: string;
   upvotes: number;
   downvotes?: number;
   media?: {
@@ -47,11 +48,10 @@ interface MapViewProps {
   issues?: Issue[];
 }
 
-const GeofencingHandler = () => {
+const GeofencingHandler: React.FC = () => {
   const map = useMapEvents({
     locationfound(e) {
       const fixedRadius = 5000; // 5km
-
       L.marker(e.latlng)
         .addTo(map)
         .bindPopup(`📍 You are within ${fixedRadius} meters.`)
@@ -65,7 +65,11 @@ const GeofencingHandler = () => {
       }).addTo(map);
     },
     locationerror() {
-      alert('Location access denied or unavailable.');
+      // avoid blocking UI with alert in production
+      // keep console message for debugging
+      // alert('Location access denied or unavailable.');
+      // eslint-disable-next-line no-console
+      console.warn('Location access denied or unavailable.');
     }
   });
 
@@ -76,10 +80,36 @@ const GeofencingHandler = () => {
   return null;
 };
 
-const MapView = ({ issues = [] }: MapViewProps) => {
+const MapClickHandler: React.FC<{ setLocationName: (s: string) => void; setClickedLocation: (c: { lat: number; lng: number } | null) => void; }> = ({ setLocationName, setClickedLocation }) => {
+  useMapEvents({
+    async click(e) {
+      const { lat, lng } = e.latlng;
+
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+        );
+        const data = await res.json();
+
+        const addr = data.address || {};
+        const city = addr.city || addr.town || addr.village || addr.county || '';
+        const country = addr.country || '';
+        setLocationName(`${city}${city && country ? ', ' : ''}${country}`);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.warn('Reverse geocode failed', err);
+        setLocationName('');
+      }
+
+      setClickedLocation({ lat, lng });
+    }
+  });
+  return null;
+};
+
+const MapView: React.FC<MapViewProps> = ({ issues = [] }) => {
   const center: LatLngExpression = [23.6, 58.5];
 
-  // Core state
   const [mapIssues, setMapIssues] = useState<Issue[]>([]);
   const [clickedLocation, setClickedLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [title, setTitle] = useState('');
@@ -87,12 +117,10 @@ const MapView = ({ issues = [] }: MapViewProps) => {
   const [type, setType] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  // Media state
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [uploadedVideos, setUploadedVideos] = useState<string[]>([]);
   const [referenceLink, setReferenceLink] = useState<string>('');
   const [locationName, setLocationName] = useState<string>('');
-
 
   // Fetch trending issues
   const fetchMapIssues = async () => {
@@ -102,9 +130,10 @@ const MapView = ({ issues = [] }: MapViewProps) => {
       .gt('upvotes', 5);
 
     if (error) {
+      // eslint-disable-next-line no-console
       console.error('❌ Error fetching map_issues:', error.message);
     } else {
-      setMapIssues(data ?? []);
+      setMapIssues((data as Issue[]) ?? []);
     }
   };
 
@@ -112,18 +141,19 @@ const MapView = ({ issues = [] }: MapViewProps) => {
     fetchMapIssues();
   }, []);
 
-  // Image upload handler
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
 
     const urls: string[] = [];
     for (const file of Array.from(files)) {
+      const path = `images/${Date.now()}-${file.name}`;
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('issue-media')
-        .upload(`images/${Date.now()}-${file.name}`, file);
+        .upload(path, file);
 
       if (uploadError) {
+        // eslint-disable-next-line no-console
         console.error('❌ Image upload error:', uploadError.message);
         continue;
       }
@@ -137,18 +167,19 @@ const MapView = ({ issues = [] }: MapViewProps) => {
     setUploadedImages(urls);
   };
 
-  // Video upload handler
   const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
 
     const urls: string[] = [];
     for (const file of Array.from(files)) {
+      const path = `videos/${Date.now()}-${file.name}`;
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('issue-media')
-        .upload(`videos/${Date.now()}-${file.name}`, file);
+        .upload(path, file);
 
       if (uploadError) {
+        // eslint-disable-next-line no-console
         console.error('❌ Video upload error:', uploadError.message);
         continue;
       }
@@ -162,7 +193,6 @@ const MapView = ({ issues = [] }: MapViewProps) => {
     setUploadedVideos(urls);
   };
 
-  // Submit new issue with media
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!clickedLocation || !title) {
@@ -192,65 +222,27 @@ const MapView = ({ issues = [] }: MapViewProps) => {
       .select();
 
     if (error) {
+      // eslint-disable-next-line no-console
       console.error('❌ Error submitting issue:', error.message);
     } else {
-      setMapIssues(prev => [...prev, ...(data ?? [])]);
-      // Reset form and media state
+      setMapIssues(prev => [...prev, ...(data as Issue[])]);
       setTitle('');
       setDescription('');
       setClickedLocation(null);
       setUploadedImages([]);
       setUploadedVideos([]);
       setReferenceLink('');
+      setLocationName('');
     }
 
     setSubmitting(false);
   };
 
- // Replace MapClickHandler with this:
-const MapClickHandler = () => {
-  useMapEvents({
-    async click(e) {
-      const { lat, lng } = e.latlng;
-
-      // 1. Fetch address data from Nominatim
-      try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
-        );
-        const data = await res.json();
-
-        // 2. Extract city/town/village + country
-        const addr = data.address;
-        const city =
-          addr.city || addr.town || addr.village || addr.county || '';
-        const country = addr.country || '';
-        setLocationName(`${city}${city && country ? ', ' : ''}${country}`);
-      } catch (err) {
-        console.warn('Reverse geocode failed', err);
-        setLocationName('');
-      }
-
-      // 3. Store raw coords and show form
-      setClickedLocation({ lat, lng });
-    }
-  });
-  return null;
-};
-
-
   return (
-    <div
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: '100%',
-        backgroundColor: '#1e3a8a',
-        border: '1px solid #1e40af',
-        borderRadius: '8px',
-        overflow: 'hidden'
-      }}
-    >
+    <div className="mapview-root" style={{ backgroundColor: '#1e3a8a', border: '1px solid #1e40af', borderRadius: 8 }}>
+      {/* debug badge: remove after verification */}
+      <div className="mapview-debug-badge">✅ MapView Loaded</div>
+
       <MapContainer
         center={center}
         zoom={6}
@@ -262,7 +254,7 @@ const MapClickHandler = () => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <GeofencingHandler />
-        <MapClickHandler />
+        <MapClickHandler setLocationName={setLocationName} setClickedLocation={setClickedLocation} />
 
         {[...issues, ...mapIssues].map(issue => {
           const isTrending = issue.upvotes >= 5;
@@ -359,8 +351,8 @@ const MapClickHandler = () => {
                   color: 'white'
                 }}
               >
-                {/* SHOW RESOLVED ADDRESS HERE */}
                 <div style={{ marginBottom: '0.5rem', fontSize: '0.9rem' }}>
+                  {locationName}
                 </div>
 
                 <select
@@ -384,7 +376,6 @@ const MapClickHandler = () => {
                   <option value="other">Other</option>
                 </select>
 
-                {/* Title field */}
                 <input
                   type="text"
                   placeholder="Title"
