@@ -1,10 +1,12 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MapView from '../components/MapView';
 import LiveIssues from '../components/LiveIssues';
 import TrendingIssues from '../components/TrendingIssues';
 const HomePage = () => {
     const [activeTab, setActiveTab] = useState('live');
+    const navigate = useNavigate();
     return (_jsxs("div", { style: {
             backgroundColor: '#1e3a8a',
             minHeight: '100vh',
@@ -12,7 +14,15 @@ const HomePage = () => {
             flexDirection: 'column',
             color: 'white',
             width: '100%',
-        }, children: [_jsx("div", { style: { height: '600px', width: '100%', borderBottom: '1px solid #1e3a8a' }, children: _jsx(MapView, {}) }), _jsxs("div", { style: { padding: '1rem', backgroundColor: '#0f172a', borderTop: '1px solid #1e3a8a' }, children: [_jsxs("div", { style: { display: 'flex', gap: '1rem', marginBottom: '1rem' }, children: [_jsx("button", { onClick: () => setActiveTab('live'), style: {
+        }, children: [_jsx("div", { style: { display: 'flex', justifyContent: 'flex-end', padding: '1rem' }, children: _jsx("button", { onClick: () => navigate('/login'), style: {
+                        padding: '0.5rem 1rem',
+                        borderRadius: '0.375rem',
+                        backgroundColor: '#1d4ed8',
+                        color: 'white',
+                        fontWeight: '600',
+                        border: 'none',
+                        cursor: 'pointer',
+                    }, children: "Login" }) }), _jsx("div", { style: { height: '600px', width: '100%', borderBottom: '1px solid #1e3a8a' }, children: _jsx(MapView, {}) }), _jsxs("div", { style: { padding: '1rem', backgroundColor: '#0f172a', borderTop: '1px solid #1e3a8a' }, children: [_jsxs("div", { style: { display: 'flex', gap: '1rem', marginBottom: '1rem' }, children: [_jsx("button", { onClick: () => setActiveTab('live'), style: {
                                     padding: '0.5rem 1rem',
                                     borderRadius: '0.375rem',
                                     backgroundColor: activeTab === 'live' ? '#1d4ed8' : '#1e40af',

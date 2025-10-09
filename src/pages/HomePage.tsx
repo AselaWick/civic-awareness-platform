@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MapView from '../components/MapView';
 import LiveIssues from '../components/LiveIssues';
 import TrendingIssues from '../components/TrendingIssues';
 
 const HomePage = () => {
   const [activeTab, setActiveTab] = useState<'live' | 'trending'>('live');
+  const navigate = useNavigate();
 
   return (
     <div
@@ -17,6 +19,24 @@ const HomePage = () => {
         width: '100%',
       }}
     >
+      {/* Header with Login Button */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '1rem' }}>
+        <button
+          onClick={() => navigate('/login')}
+          style={{
+            padding: '0.5rem 1rem',
+            borderRadius: '0.375rem',
+            backgroundColor: '#1d4ed8',
+            color: 'white',
+            fontWeight: '600',
+            border: 'none',
+            cursor: 'pointer',
+          }}
+        >
+          Login
+        </button>
+      </div>
+
       {/* Map Section */}
       <div style={{ height: '600px', width: '100%', borderBottom: '1px solid #1e3a8a' }}>
         <MapView />
