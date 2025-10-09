@@ -1,3 +1,7 @@
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Login from './assets/auth/Login';
+
 import './App.css';
 import { useState } from 'react';
 import Button from './components/Button';
@@ -7,11 +11,7 @@ import LiveIssues from './components/LiveIssues';
 import 'leaflet/dist/leaflet.css';
 import MapView from './components/MapView';
 
-
-
-
-
-function App() {
+const CivicHome = () => {
   const [showIssueForm, setShowIssueForm] = useState(false);
 
   const handleSubmit = () => {
@@ -56,6 +56,15 @@ function App() {
         </div>
       </main>
     </div>
+  );
+};
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<CivicHome />} />
+      <Route path="/login" element={<Login />} />
+    </Routes>
   );
 }
 

@@ -1,5 +1,6 @@
 import { jsx as _jsx } from "react/jsx-runtime";
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import HomePage from './pages/HomePage';
-ReactDOM.createRoot(document.getElementById('root')).render(_jsx(React.StrictMode, { children: _jsx(HomePage, {}) }));
+import { BrowserRouter } from 'react-router-dom';
+import App from './App'; // ← We'll move routing into App.tsx
+ReactDOM.createRoot(document.getElementById('root')).render(_jsx(React.StrictMode, { children: _jsx(BrowserRouter, { children: _jsx(App, {}) }) }));
