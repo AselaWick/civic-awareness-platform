@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-// import Login from './assets/auth/Login'; ← Login route disabled
+import Login from './assets/auth/Login';
 
 import './App.css';
 import { useState } from 'react';
@@ -63,7 +63,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<CivicHome />} />
-      {/* <Route path="/login" element={<Login />} /> ← Temporarily disabled */}
+      <Route path="/login" element={<Login />} />
     </Routes>
   );
 }
