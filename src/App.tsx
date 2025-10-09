@@ -62,8 +62,7 @@ const CivicHome = () => {
 function App() {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/map" element={<MapView />} />
+      <Route path="/" element={<MapView />} />
     </Routes>
   );
 }
