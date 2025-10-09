@@ -62,8 +62,8 @@ const CivicHome = () => {
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<CivicHome />} />
-      <Route path="/login" element={<Login />} />
+      <Route path="/" element={<Login />} />
+      <Route path="/home" element={<CivicHome />} />
     </Routes>
   );
 }
