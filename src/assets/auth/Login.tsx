@@ -20,13 +20,13 @@ const Login = () => {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        navigate('/MapView');
+        navigate('/map');
       }
     });
 
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
-        navigate('/MapView');
+        navigate('/map');
       }
     });
 
