@@ -51,9 +51,9 @@ const MapView = ({ issues = [] }) => {
         console.log('Attempting login...');
         await supabase.auth.signInWithOAuth({
             provider: 'google',
-            options: {
-                redirectTo: 'https://avhejmbqrlpzcgarzcjv.supabase.co/auth/v1/callback'
-            }
+            //options: {
+            // redirectTo: 'https://avhejmbqrlpzcgarzcjv.supabase.co/auth/v1/callback'
+            // }
         });
     };
     const center = [23.6, 58.5];

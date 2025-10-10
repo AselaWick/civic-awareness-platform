@@ -89,9 +89,9 @@ const MapView = ({ issues = [] }: MapViewProps) => {
     console.log('Attempting login...')
     await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: {
-        redirectTo: 'https://avhejmbqrlpzcgarzcjv.supabase.co/auth/v1/callback'
-      }
+      //options: {
+       // redirectTo: 'https://avhejmbqrlpzcgarzcjv.supabase.co/auth/v1/callback'
+     // }
 
     });
   };
