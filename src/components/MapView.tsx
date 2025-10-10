@@ -11,6 +11,7 @@ import 'leaflet/dist/leaflet.css';
 import { supabase } from '../supabaseClient';
 import VoteButtons from './VoteButtons';
 import { useSupabaseClient } from '@supabase/auth-helpers-react';
+import { User } from '@supabase/supabase-js'; 
 
 import markerIcon from '/icons/marker-icon.png';
 import markerIcon2x from '/icons/marker-icon-2x.png';
@@ -99,6 +100,8 @@ const MapView = ({ issues = [] }: MapViewProps) => {
   const [description, setDescription] = useState('');
   const [type, setType] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+
 
   // Media state
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
@@ -124,6 +127,24 @@ const MapView = ({ issues = [] }: MapViewProps) => {
   useEffect(() => {
     fetchMapIssues();
   }, []);
+
+useEffect(() => {
+  const getUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    setUser(user);
+  };
+
+  getUser();
+
+  const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+    setUser(session?.user ?? null);
+  });
+
+  return () => {
+    listener?.subscription.unsubscribe();
+  };
+}, []);
+
 
   // Image upload handler
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -251,6 +272,10 @@ const MapClickHandler = () => {
   return null;
 };
 
+const handleLogout = async () => {
+  await supabase.auth.signOut();
+  setUser(null);
+};
 
   return (
     <div
@@ -264,6 +289,25 @@ const MapClickHandler = () => {
         overflow: 'hidden'
       }}
     >
+  {user ? (
+  <button
+        onClick={handleLogout}
+        style={{
+          position: 'absolute',
+          top: '10px',
+          right: '10px',
+          zIndex: 1000,
+          padding: '8px 12px',
+          backgroundColor: '#ef4444',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer'
+        }}
+      >
+        Sign Out ({user.email})
+        </button>
+  ) : (
  <button
   onClick={handleLogin}
   style={{
@@ -281,7 +325,7 @@ const MapClickHandler = () => {
 >
   Sign In
 </button>
-
+  )}
       <MapContainer
         center={center}
         zoom={6}

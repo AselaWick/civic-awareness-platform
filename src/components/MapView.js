@@ -1,4 +1,4 @@
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import { jsxs as _jsxs, jsx as _jsx } from "react/jsx-runtime";
 import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import L from 'leaflet';
@@ -60,6 +60,7 @@ const MapView = ({ issues = [] }) => {
     const [description, setDescription] = useState('');
     const [type, setType] = useState('');
     const [submitting, setSubmitting] = useState(false);
+    const [user, setUser] = useState(null);
     // Media state
     const [uploadedImages, setUploadedImages] = useState([]);
     const [uploadedVideos, setUploadedVideos] = useState([]);
@@ -80,6 +81,19 @@ const MapView = ({ issues = [] }) => {
     };
     useEffect(() => {
         fetchMapIssues();
+    }, []);
+    useEffect(() => {
+        const getUser = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            setUser(user);
+        };
+        getUser();
+        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+            setUser(session?.user ?? null);
+        });
+        return () => {
+            listener?.subscription.unsubscribe();
+        };
     }, []);
     // Image upload handler
     const handleImageUpload = async (e) => {
@@ -188,6 +202,10 @@ const MapView = ({ issues = [] }) => {
         });
         return null;
     };
+    const handleLogout = async () => {
+        await supabase.auth.signOut();
+        setUser(null);
+    };
     return (_jsxs("div", { style: {
             position: 'relative',
             width: '100%',
@@ -196,7 +214,18 @@ const MapView = ({ issues = [] }) => {
             border: '1px solid #1e40af',
             borderRadius: '8px',
             overflow: 'hidden'
-        }, children: [_jsx("button", { onClick: handleLogin, style: {
+        }, children: [user ? (_jsxs("button", { onClick: handleLogout, style: {
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                    zIndex: 1000,
+                    padding: '8px 12px',
+                    backgroundColor: '#ef4444',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                }, children: ["Sign Out (", user.email, ")"] })) : (_jsx("button", { onClick: handleLogin, style: {
                     position: 'absolute',
                     top: '10px',
                     right: '10px',
@@ -207,7 +236,7 @@ const MapView = ({ issues = [] }) => {
                     border: 'none',
                     borderRadius: '4px',
                     cursor: 'pointer'
-                }, children: "Sign In" }), _jsxs(MapContainer, { center: center, zoom: 6, scrollWheelZoom: true, style: { width: '100%', height: '100%' }, children: [_jsx(TileLayer, { attribution: "\u00A9 OpenStreetMap contributors", url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" }), _jsx(GeofencingHandler, {}), _jsx(MapClickHandler, {}), [...issues, ...mapIssues].map(issue => {
+                }, children: "Sign In" })), _jsxs(MapContainer, { center: center, zoom: 6, scrollWheelZoom: true, style: { width: '100%', height: '100%' }, children: [_jsx(TileLayer, { attribution: "\u00A9 OpenStreetMap contributors", url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" }), _jsx(GeofencingHandler, {}), _jsx(MapClickHandler, {}), [...issues, ...mapIssues].map(issue => {
                         const isTrending = issue.upvotes >= 5;
                         const isViral = issue.upvotes >= 8;
                         const popupStyle = {
