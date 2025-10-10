@@ -48,6 +48,7 @@ const MapView = ({ issues = [] }) => {
     //Login Authentication button
     // const supabaseClient = useSupabaseClient();
     const handleLogin = async () => {
+        console.log('Attempting login...');
         await supabase.auth.signInWithOAuth({
             provider: 'google',
         });
