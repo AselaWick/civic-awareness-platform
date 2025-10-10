@@ -198,48 +198,58 @@ useEffect(() => {
 
   // Submit new issue with media
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!clickedLocation || !title) {
-      return;
-    }
+  e.preventDefault();
 
-    setSubmitting(true);
+  if (!user) {
+    alert('You must be signed in to submit an issue.');
+    return;
+  }
 
-    const newIssue = {
-      title,
-      description,
-      location: clickedLocation,
-      timestamp: new Date().toISOString(),
-      upvotes: 0,
-      downvotes: 0,
-      location_name: locationName,
-      media: {
-        images: uploadedImages,
-        videos: uploadedVideos,
-        links: referenceLink ? [referenceLink] : []
-      }
-    };
+  if (!clickedLocation || !title) {
+    return;
+  }
 
-    const { data, error } = await supabase
-      .from('map_issues')
-      .insert([newIssue])
-      .select();
+  setSubmitting(true);
 
-    if (error) {
-      console.error('❌ Error submitting issue:', error.message);
-    } else {
-      setMapIssues(prev => [...prev, ...(data ?? [])]);
-      // Reset form and media state
-      setTitle('');
-      setDescription('');
-      setClickedLocation(null);
-      setUploadedImages([]);
-      setUploadedVideos([]);
-      setReferenceLink('');
-    }
-
-    setSubmitting(false);
+  const newIssue = {
+    title,
+    description,
+    location: clickedLocation,
+    timestamp: new Date().toISOString(),
+    upvotes: 0,
+    downvotes: 0,
+    location_name: locationName,
+    media: {
+      images: uploadedImages,
+      videos: uploadedVideos,
+      links: referenceLink ? [referenceLink] : []
+    },
+    user_id: user.id,
+    user_email: user.email
   };
+
+  const { data, error } = await supabase
+    .from('map_issues')
+    .insert([newIssue])
+    .select();
+
+  if (error) {
+    console.error('❌ Error submitting issue:', error.message);
+    alert('Failed to submit issue.');
+  } else {
+    setMapIssues(prev => [...prev, ...(data ?? [])]);
+    setTitle('');
+    setDescription('');
+    setClickedLocation(null);
+    setUploadedImages([]);
+    setUploadedVideos([]);
+    setReferenceLink('');
+    alert('✅ Issue submitted successfully!');
+  }
+
+  setSubmitting(false);
+};
+
 
  // Replace MapClickHandler with this:
 const MapClickHandler = () => {

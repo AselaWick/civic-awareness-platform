@@ -140,6 +140,10 @@ const MapView = ({ issues = [] }) => {
     // Submit new issue with media
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!user) {
+            alert('You must be signed in to submit an issue.');
+            return;
+        }
         if (!clickedLocation || !title) {
             return;
         }
@@ -156,7 +160,9 @@ const MapView = ({ issues = [] }) => {
                 images: uploadedImages,
                 videos: uploadedVideos,
                 links: referenceLink ? [referenceLink] : []
-            }
+            },
+            user_id: user.id,
+            user_email: user.email
         };
         const { data, error } = await supabase
             .from('map_issues')
@@ -164,16 +170,17 @@ const MapView = ({ issues = [] }) => {
             .select();
         if (error) {
             console.error('❌ Error submitting issue:', error.message);
+            alert('Failed to submit issue.');
         }
         else {
             setMapIssues(prev => [...prev, ...(data ?? [])]);
-            // Reset form and media state
             setTitle('');
             setDescription('');
             setClickedLocation(null);
             setUploadedImages([]);
             setUploadedVideos([]);
             setReferenceLink('');
+            alert('✅ Issue submitted successfully!');
         }
         setSubmitting(false);
     };
