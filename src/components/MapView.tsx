@@ -10,10 +10,14 @@ import L, { LatLngExpression } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { supabase } from '../supabaseClient';
 import VoteButtons from './VoteButtons';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 
 import markerIcon from '/icons/marker-icon.png';
 import markerIcon2x from '/icons/marker-icon-2x.png';
 import markerShadow from '/icons/marker-shadow.png';
+
+// Login Button for signup
+
 
 // Default Leaflet icon
 const DefaultIcon = L.icon({
@@ -77,6 +81,14 @@ const GeofencingHandler = () => {
 };
 
 const MapView = ({ issues = [] }: MapViewProps) => {
+  //Login Authentication button
+  const supabaseClient = useSupabaseClient();
+  const handleLogin = async () => {
+    await supabaseClient.auth.signInWithOAuth({
+      provider: 'google',
+
+    });
+  };
   const center: LatLngExpression = [23.6, 58.5];
 
   // Core state
@@ -251,6 +263,24 @@ const MapClickHandler = () => {
         overflow: 'hidden'
       }}
     >
+ <button
+  onClick={handleLogin}
+  style={{
+    position: 'absolute',
+    top: '10px',
+    right: '10px',
+    zIndex: 1000,
+    padding: '8px 12px',
+    backgroundColor: '#007bff',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer'
+  }}
+>
+  Sign In
+</button>
+
       <MapContainer
         center={center}
         zoom={6}

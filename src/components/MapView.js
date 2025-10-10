@@ -5,9 +5,11 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { supabase } from '../supabaseClient';
 import VoteButtons from './VoteButtons';
+import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import markerIcon from '/icons/marker-icon.png';
 import markerIcon2x from '/icons/marker-icon-2x.png';
 import markerShadow from '/icons/marker-shadow.png';
+// Login Button for signup
 // Default Leaflet icon
 const DefaultIcon = L.icon({
     iconUrl: markerIcon,
@@ -44,6 +46,13 @@ const GeofencingHandler = () => {
     return null;
 };
 const MapView = ({ issues = [] }) => {
+    //Login Authentication button
+    const supabaseClient = useSupabaseClient();
+    const handleLogin = async () => {
+        await supabaseClient.auth.signInWithOAuth({
+            provider: 'google',
+        });
+    };
     const center = [23.6, 58.5];
     // Core state
     const [mapIssues, setMapIssues] = useState([]);
@@ -180,7 +189,7 @@ const MapView = ({ issues = [] }) => {
         });
         return null;
     };
-    return (_jsx("div", { style: {
+    return (_jsxs("div", { style: {
             position: 'relative',
             width: '100%',
             height: '100%',
@@ -188,64 +197,75 @@ const MapView = ({ issues = [] }) => {
             border: '1px solid #1e40af',
             borderRadius: '8px',
             overflow: 'hidden'
-        }, children: _jsxs(MapContainer, { center: center, zoom: 6, scrollWheelZoom: true, style: { width: '100%', height: '100%' }, children: [_jsx(TileLayer, { attribution: "\u00A9 OpenStreetMap contributors", url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" }), _jsx(GeofencingHandler, {}), _jsx(MapClickHandler, {}), [...issues, ...mapIssues].map(issue => {
-                    const isTrending = issue.upvotes >= 5;
-                    const isViral = issue.upvotes >= 8;
-                    const popupStyle = {
-                        fontSize: '0.875rem',
-                        lineHeight: '1.4',
-                        border: isViral ? '2px solid red' : isTrending ? '2px solid blue' : 'none',
-                        padding: '0.5rem',
-                        borderRadius: '6px',
-                        backgroundColor: '#f8fafc'
-                    };
-                    return (_jsx(Marker, { position: [issue.location.lat, issue.location.lng], children: _jsx(Popup, { children: _jsxs("div", { style: popupStyle, children: [_jsx("div", { style: { fontSize: '0.75rem', color: '#555' }, children: issue.location_name }), _jsx("strong", { children: issue.title }), _jsx("br", {}), issue.description, _jsx("br", {}), _jsxs("div", { style: { marginTop: '0.5rem', fontWeight: 'bold' }, children: ["\uD83D\uDC4D ", issue.upvotes, " \u00A0\u00A0 \uD83D\uDC4E ", issue.downvotes ?? 0] }), _jsx("div", { style: { marginTop: '0.5rem' }, children: _jsx(VoteButtons, { issueId: issue.id, currentUpvotes: issue.upvotes, currentDownvotes: issue.downvotes ?? 0 }) }), issue.media?.images?.map((url, i) => (_jsx("img", { src: url, alt: `image-${i}`, style: { width: '100%', marginTop: '0.5rem' } }, i))), issue.media?.videos?.map((url, i) => (_jsx("video", { src: url, controls: true, style: { width: '100%', marginTop: '0.5rem' } }, i))), issue.media?.links?.map((link, i) => (_jsxs("a", { href: link, target: "_blank", rel: "noopener noreferrer", style: { display: 'block', marginTop: '0.5rem', color: 'blue' }, children: ["\uD83D\uDCCE Reference ", i + 1] }, i))), isTrending && (_jsxs("div", { style: {
-                                            color: isViral ? 'red' : 'blue',
-                                            fontWeight: 'bold',
-                                            marginTop: '0.25rem'
-                                        }, children: ["\uD83D\uDD25 ", isViral ? 'Viral' : 'Trending'] }))] }) }) }, issue.id));
-                }), clickedLocation && (_jsx(Marker, { position: [clickedLocation.lat, clickedLocation.lng], children: _jsx(Popup, { children: _jsxs("form", { onSubmit: handleSubmit, style: {
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '0.5rem',
-                                width: '200px',
-                                color: 'white'
-                            }, children: [_jsx("div", { style: { marginBottom: '0.5rem', fontSize: '0.9rem' } }), _jsxs("select", { value: type, onChange: e => setType(e.target.value), required: true, style: {
-                                        padding: '0.25rem 0.5rem',
-                                        border: '1px solid #1e40af',
-                                        backgroundColor: '#0f172a',
-                                        color: 'white',
-                                        borderRadius: '4px',
-                                        fontSize: '0.875rem'
-                                    }, children: [_jsx("option", { value: "", disabled: true, children: "\u2014 Select a type \u2014" }), _jsx("option", { value: "news", children: "News" }), _jsx("option", { value: "emergency", children: "Emergency" }), _jsx("option", { value: "sport", children: "Sport" }), _jsx("option", { value: "conflicts", children: "Conflicts" }), _jsx("option", { value: "other", children: "Other" })] }), _jsx("input", { type: "text", placeholder: "Title", value: title, onChange: e => setTitle(e.target.value), style: {
-                                        padding: '0.25rem 0.5rem',
-                                        border: '1px solid #1e40af',
-                                        backgroundColor: '#0f172a',
-                                        color: 'white',
-                                        borderRadius: '4px',
-                                        fontSize: '0.875rem'
-                                    }, required: true }), _jsx("textarea", { placeholder: "Description", value: description, onChange: e => setDescription(e.target.value), rows: 3, style: {
-                                        padding: '0.25rem 0.5rem',
-                                        border: '1px solid #1e40af',
-                                        backgroundColor: '#0f172a',
-                                        color: 'white',
-                                        borderRadius: '4px',
-                                        fontSize: '0.875rem'
-                                    } }), _jsx("input", { type: "file", accept: "image/*", multiple: true, onChange: handleImageUpload, style: { color: 'white' } }), _jsx("input", { type: "file", accept: "video/*", multiple: true, onChange: handleVideoUpload, style: { color: 'white' } }), _jsx("input", { type: "url", placeholder: "Reference link (optional)", value: referenceLink, onChange: e => setReferenceLink(e.target.value), style: {
-                                        padding: '0.25rem 0.5rem',
-                                        border: '1px solid #1e40af',
-                                        backgroundColor: '#0f172a',
-                                        color: 'white',
-                                        borderRadius: '4px',
-                                        fontSize: '0.875rem'
-                                    } }), _jsx("button", { type: "submit", disabled: submitting, style: {
-                                        backgroundColor: '#1d4ed8',
-                                        color: 'white',
-                                        padding: '0.5rem',
-                                        borderRadius: '4px',
-                                        fontSize: '0.875rem',
-                                        border: 'none',
-                                        cursor: 'pointer'
-                                    }, children: submitting ? 'Submitting...' : 'Submit' })] }) }) }))] }) }));
+        }, children: [_jsx("button", { onClick: handleLogin, style: {
+                    position: 'absolute',
+                    top: '10px',
+                    right: '10px',
+                    zIndex: 1000,
+                    padding: '8px 12px',
+                    backgroundColor: '#007bff',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                }, children: "Sign In" }), _jsxs(MapContainer, { center: center, zoom: 6, scrollWheelZoom: true, style: { width: '100%', height: '100%' }, children: [_jsx(TileLayer, { attribution: "\u00A9 OpenStreetMap contributors", url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" }), _jsx(GeofencingHandler, {}), _jsx(MapClickHandler, {}), [...issues, ...mapIssues].map(issue => {
+                        const isTrending = issue.upvotes >= 5;
+                        const isViral = issue.upvotes >= 8;
+                        const popupStyle = {
+                            fontSize: '0.875rem',
+                            lineHeight: '1.4',
+                            border: isViral ? '2px solid red' : isTrending ? '2px solid blue' : 'none',
+                            padding: '0.5rem',
+                            borderRadius: '6px',
+                            backgroundColor: '#f8fafc'
+                        };
+                        return (_jsx(Marker, { position: [issue.location.lat, issue.location.lng], children: _jsx(Popup, { children: _jsxs("div", { style: popupStyle, children: [_jsx("div", { style: { fontSize: '0.75rem', color: '#555' }, children: issue.location_name }), _jsx("strong", { children: issue.title }), _jsx("br", {}), issue.description, _jsx("br", {}), _jsxs("div", { style: { marginTop: '0.5rem', fontWeight: 'bold' }, children: ["\uD83D\uDC4D ", issue.upvotes, " \u00A0\u00A0 \uD83D\uDC4E ", issue.downvotes ?? 0] }), _jsx("div", { style: { marginTop: '0.5rem' }, children: _jsx(VoteButtons, { issueId: issue.id, currentUpvotes: issue.upvotes, currentDownvotes: issue.downvotes ?? 0 }) }), issue.media?.images?.map((url, i) => (_jsx("img", { src: url, alt: `image-${i}`, style: { width: '100%', marginTop: '0.5rem' } }, i))), issue.media?.videos?.map((url, i) => (_jsx("video", { src: url, controls: true, style: { width: '100%', marginTop: '0.5rem' } }, i))), issue.media?.links?.map((link, i) => (_jsxs("a", { href: link, target: "_blank", rel: "noopener noreferrer", style: { display: 'block', marginTop: '0.5rem', color: 'blue' }, children: ["\uD83D\uDCCE Reference ", i + 1] }, i))), isTrending && (_jsxs("div", { style: {
+                                                color: isViral ? 'red' : 'blue',
+                                                fontWeight: 'bold',
+                                                marginTop: '0.25rem'
+                                            }, children: ["\uD83D\uDD25 ", isViral ? 'Viral' : 'Trending'] }))] }) }) }, issue.id));
+                    }), clickedLocation && (_jsx(Marker, { position: [clickedLocation.lat, clickedLocation.lng], children: _jsx(Popup, { children: _jsxs("form", { onSubmit: handleSubmit, style: {
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '0.5rem',
+                                    width: '200px',
+                                    color: 'white'
+                                }, children: [_jsx("div", { style: { marginBottom: '0.5rem', fontSize: '0.9rem' } }), _jsxs("select", { value: type, onChange: e => setType(e.target.value), required: true, style: {
+                                            padding: '0.25rem 0.5rem',
+                                            border: '1px solid #1e40af',
+                                            backgroundColor: '#0f172a',
+                                            color: 'white',
+                                            borderRadius: '4px',
+                                            fontSize: '0.875rem'
+                                        }, children: [_jsx("option", { value: "", disabled: true, children: "\u2014 Select a type \u2014" }), _jsx("option", { value: "news", children: "News" }), _jsx("option", { value: "emergency", children: "Emergency" }), _jsx("option", { value: "sport", children: "Sport" }), _jsx("option", { value: "conflicts", children: "Conflicts" }), _jsx("option", { value: "other", children: "Other" })] }), _jsx("input", { type: "text", placeholder: "Title", value: title, onChange: e => setTitle(e.target.value), style: {
+                                            padding: '0.25rem 0.5rem',
+                                            border: '1px solid #1e40af',
+                                            backgroundColor: '#0f172a',
+                                            color: 'white',
+                                            borderRadius: '4px',
+                                            fontSize: '0.875rem'
+                                        }, required: true }), _jsx("textarea", { placeholder: "Description", value: description, onChange: e => setDescription(e.target.value), rows: 3, style: {
+                                            padding: '0.25rem 0.5rem',
+                                            border: '1px solid #1e40af',
+                                            backgroundColor: '#0f172a',
+                                            color: 'white',
+                                            borderRadius: '4px',
+                                            fontSize: '0.875rem'
+                                        } }), _jsx("input", { type: "file", accept: "image/*", multiple: true, onChange: handleImageUpload, style: { color: 'white' } }), _jsx("input", { type: "file", accept: "video/*", multiple: true, onChange: handleVideoUpload, style: { color: 'white' } }), _jsx("input", { type: "url", placeholder: "Reference link (optional)", value: referenceLink, onChange: e => setReferenceLink(e.target.value), style: {
+                                            padding: '0.25rem 0.5rem',
+                                            border: '1px solid #1e40af',
+                                            backgroundColor: '#0f172a',
+                                            color: 'white',
+                                            borderRadius: '4px',
+                                            fontSize: '0.875rem'
+                                        } }), _jsx("button", { type: "submit", disabled: submitting, style: {
+                                            backgroundColor: '#1d4ed8',
+                                            color: 'white',
+                                            padding: '0.5rem',
+                                            borderRadius: '4px',
+                                            fontSize: '0.875rem',
+                                            border: 'none',
+                                            cursor: 'pointer'
+                                        }, children: submitting ? 'Submitting...' : 'Submit' })] }) }) }))] })] }));
 };
 export default MapView;
