@@ -90,7 +90,7 @@ const MapView = ({ issues = [] }: MapViewProps) => {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo:'https://civic-awareness-platform.vercel.app/auth/v1/callback'
+        redirectTo: 'https://avhejmbqrlpzcgarzcjv.supabase.co/auth/v1/callback'
       }
 
     });
