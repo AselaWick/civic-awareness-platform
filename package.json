@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@supabase/auth-helpers-react": "^0.5.0",
-    "@supabase/supabase-js": "^2.57.0",
+    "@supabase/supabase-js": "^2.75.0",
     "leaflet": "^1.9.4",
     "leaflet.locatecontrol": "^0.84.2",
     "react": "^19.1.1",

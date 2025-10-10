@@ -16,6 +16,7 @@ import markerIcon from '/icons/marker-icon.png';
 import markerIcon2x from '/icons/marker-icon-2x.png';
 import markerShadow from '/icons/marker-shadow.png';
 
+
 // Login Button for signup
 
 
@@ -82,9 +83,9 @@ const GeofencingHandler = () => {
 
 const MapView = ({ issues = [] }: MapViewProps) => {
   //Login Authentication button
-  const supabaseClient = useSupabaseClient();
+  // const supabaseClient = useSupabaseClient();
   const handleLogin = async () => {
-    await supabaseClient.auth.signInWithOAuth({
+    await supabase.auth.signInWithOAuth({
       provider: 'google',
 
     });

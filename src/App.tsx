@@ -6,12 +6,15 @@ import IssueForm from './components/IssueForm';
 import LiveIssues from './components/LiveIssues';
 import 'leaflet/dist/leaflet.css';
 import MapView from './components/MapView';
-
+//import { createBrowserSupabaseClient } from '@supabase/auth-helpers-react';
+//import { SessionContextProvider } from '@supabase/auth-helpers-react';
+import { supabase } from './supabaseClient';
 
 
 
 
 function App() {
+
   const [showIssueForm, setShowIssueForm] = useState(false);
 
   const handleSubmit = () => {

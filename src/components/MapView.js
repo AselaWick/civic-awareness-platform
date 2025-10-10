@@ -5,7 +5,6 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { supabase } from '../supabaseClient';
 import VoteButtons from './VoteButtons';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
 import markerIcon from '/icons/marker-icon.png';
 import markerIcon2x from '/icons/marker-icon-2x.png';
 import markerShadow from '/icons/marker-shadow.png';
@@ -47,9 +46,9 @@ const GeofencingHandler = () => {
 };
 const MapView = ({ issues = [] }) => {
     //Login Authentication button
-    const supabaseClient = useSupabaseClient();
+    // const supabaseClient = useSupabaseClient();
     const handleLogin = async () => {
-        await supabaseClient.auth.signInWithOAuth({
+        await supabase.auth.signInWithOAuth({
             provider: 'google',
         });
     };
