@@ -89,6 +89,9 @@ const MapView = ({ issues = [] }: MapViewProps) => {
     console.log('Attempting login...')
     await supabase.auth.signInWithOAuth({
       provider: 'google',
+      options: {
+        redirectTo:'https://civic-awareness-platform.vercel.app/auth/v1/callback'
+      }
 
     });
   };
