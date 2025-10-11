@@ -9,6 +9,10 @@ import MapView from './components/MapView';
 //import { createBrowserSupabaseClient } from '@supabase/auth-helpers-react';
 //import { SessionContextProvider } from '@supabase/auth-helpers-react';
 import { supabase } from './supabaseClient';
+//import custom page loading buttion
+
+import MyMapButton from './components/MyMapButton';
+import { useUser } from '@supabase/auth-helpers-react';
 
 
 
@@ -16,6 +20,8 @@ import { supabase } from './supabaseClient';
 function App() {
 
   const [showIssueForm, setShowIssueForm] = useState(false);
+  const user = useUser();
+  console.log('Logged-in user', user);
 
   const handleSubmit = () => {
     alert('Query submitted!');
@@ -30,8 +36,13 @@ function App() {
       <header className="bg-blue-900 text-white p-6 text-center text-2xl font-bold">
         Civic Awareness Platform
       </header>
-
+      
       <main className="p-6">
+        {user && (
+    <div className="text-center mb-6">
+      <MyMapButton user={user} />
+    </div>
+        )}
         <div className="text-center mb-6">
           <Button text="Submit Query" onClick={handleSubmit} />
           <Button text={showIssueForm ? 'Hide Issue Form' : 'Report an Issue'} onClick={toggleIssueForm} />
