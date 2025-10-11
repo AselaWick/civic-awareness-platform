@@ -10,6 +10,7 @@ import TrendingIssues from '../components/TrendingIssues';
 const HomePage = () => {
   const [activeTab, setActiveTab] = useState<'live' | 'trending'>('live');
   const user = useUser();
+   console.log('✅ useUser() returned:', user);
 
   return (
     <div

@@ -9,6 +9,7 @@ import TrendingIssues from '../components/TrendingIssues';
 const HomePage = () => {
     const [activeTab, setActiveTab] = useState('live');
     const user = useUser();
+    console.log('✅ useUser() returned:', user);
     return (_jsxs("div", { style: {
             backgroundColor: '#1e3a8a',
             minHeight: '100vh',
