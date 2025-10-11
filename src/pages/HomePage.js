@@ -1,15 +1,27 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
-console.log('✅ HomePage.tsx is rendering');
-import { useState } from 'react';
-import { useUser } from '@supabase/auth-helpers-react';
+import { useState, useEffect } from 'react';
+import { useSessionContext } from '@supabase/auth-helpers-react';
+import { supabase } from '../supabaseClient';
 import MyMapButton from '../components/MyMapButton';
 import MapView from '../components/MapView';
 import LiveIssues from '../components/LiveIssues';
 import TrendingIssues from '../components/TrendingIssues';
 const HomePage = () => {
     const [activeTab, setActiveTab] = useState('live');
-    const user = useUser();
-    console.log('✅ useUser() returned:', user);
+    const { session } = useSessionContext();
+    const user = session?.user;
+    console.log('✅ HomePage.tsx is rendering');
+    console.log('✅ Supabase session from context:', session);
+    console.log('✅ Extracted user:', user);
+    useEffect(() => {
+        const checkSession = async () => {
+            const { data, error } = await supabase.auth.getSession();
+            console.log('🔍 Manual session check:', data?.session);
+            if (error)
+                console.error('❌ Error fetching session:', error);
+        };
+        checkSession();
+    }, []);
     return (_jsxs("div", { style: {
             backgroundColor: '#1e3a8a',
             minHeight: '100vh',
