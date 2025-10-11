@@ -44,7 +44,7 @@ const HomePage = () => {
       {/* My Map Button */}
       {user && (
         <div style={{ textAlign: 'center', margin: '1rem 0' }}>
-          <MyMapButton user={{ id: 'test-id', email: 'test@example.com' }} />
+          <MyMapButton user={user} />
         </div>
       )}
 
