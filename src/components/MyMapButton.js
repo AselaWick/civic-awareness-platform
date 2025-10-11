@@ -6,8 +6,10 @@ const MyMapButton = ({ user }) => {
     const [pageId, setPageId] = useState(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+    console.log('MyMapButton mounted for user:', user);
     useEffect(() => {
         const fetchOrCreatePage = async () => {
+            console.log('Fetching page for user:', user?.id);
             if (!user?.id)
                 return;
             try {
@@ -16,6 +18,7 @@ const MyMapButton = ({ user }) => {
                     .select('id')
                     .eq('owner_id', user.id)
                     .single();
+                console.log('Supabase response:', { data, error });
                 if (data) {
                     setPageId(data.id);
                 }
