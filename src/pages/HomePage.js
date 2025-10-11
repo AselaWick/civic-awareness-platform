@@ -1,4 +1,5 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+console.log('✅ HomePage.tsx is rendering');
 import { useState } from 'react';
 import { useUser } from '@supabase/auth-helpers-react';
 import MyMapButton from '../components/MyMapButton';

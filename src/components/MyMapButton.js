@@ -1,14 +1,17 @@
 import { jsx as _jsx } from "react/jsx-runtime";
+console.log('✅ MyMapButton.tsx file loaded');
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 const MyMapButton = ({ user }) => {
+    console.log('✅ MyMapButton mounted for user:', user);
     const [pageId, setPageId] = useState(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     console.log('MyMapButton mounted for user:', user);
     useEffect(() => {
         const fetchOrCreatePage = async () => {
+            console.log('🔍 Fetching page for user:', user?.id);
             console.log('Fetching page for user:', user?.id);
             if (!user?.id)
                 return;

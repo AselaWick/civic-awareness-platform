@@ -1,3 +1,5 @@
+console.log('✅ HomePage.tsx is rendering');
+
 import React, { useState } from 'react';
 import { useUser } from '@supabase/auth-helpers-react';
 import MyMapButton from '../components/MyMapButton';

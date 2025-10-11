@@ -1,3 +1,5 @@
+console.log('✅ MapView.tsx is rendering');
+
 import React, { useEffect, useState } from 'react';
 import {
   MapContainer,
