@@ -12,6 +12,7 @@ import { useUser } from '@supabase/auth-helpers-react';
 function App() {
     const [showIssueForm, setShowIssueForm] = useState(false);
     const user = useUser();
+    console.log('Logged-in user', user);
     const handleSubmit = () => {
         alert('Query submitted!');
     };

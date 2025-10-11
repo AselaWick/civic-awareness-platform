@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import { useUser } from '@supabase/auth-helpers-react';
+import MyMapButton from '../components/MyMapButton';
 import MapView from '../components/MapView';
 import LiveIssues from '../components/LiveIssues';
 import TrendingIssues from '../components/TrendingIssues';
 
 const HomePage = () => {
   const [activeTab, setActiveTab] = useState<'live' | 'trending'>('live');
+  const user = useUser();
 
   return (
     <div
@@ -21,6 +24,13 @@ const HomePage = () => {
       <div style={{ height: '600px', width: '100%', borderBottom: '1px solid #1e3a8a' }}>
         <MapView />
       </div>
+
+      {/* My Map Button */}
+      {user && (
+        <div style={{ textAlign: 'center', margin: '1rem 0' }}>
+          <MyMapButton user={user} />
+        </div>
+      )}
 
       {/* Tab Navigation and Content */}
       <div style={{ padding: '1rem', backgroundColor: '#0f172a', borderTop: '1px solid #1e3a8a' }}>
